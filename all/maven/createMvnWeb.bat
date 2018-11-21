@@ -1,0 +1,1 @@
+mvn archetype:generate -DgroupId=com.ctl.web -DartifactId=commonWeb -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false

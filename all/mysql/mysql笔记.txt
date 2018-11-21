@@ -1,0 +1,68 @@
+特殊字符解决
+set names utf8mb4;  数据库执行
+character-set-server=utf8mb4；my.cnf配置
+SHOW VARIABLES LIKE '%char%';
+INSERT INTO member_extra (id, nick_name, photo_url)
+VALUES
+	(
+		'8a97b09278aa486db0ac8cdfds5awerc',
+		'_测试 表情??%^_^endcaaaaaaaaaaa', 'sdafasf'
+	)
+
+mysqld_multi start 3307   mysql多实例启动
+
+[root@docker-server-70 ~]# cat /etc/my.cnf
+[mysqld3306]
+#ledir=/var/lib/mysql/bin/mysqld
+port=3306
+socket=/var/lib/mysql/mysql.sock
+basedir=/usr
+datadir=/var/lib/mysql
+log_error=/var/lib/mysql/docker-server-70.err
+pid-file=/var/run/mysqld/mysqld.pid
+user=mysql
+max_allowed_packet = 1G
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+skip-name-resolve
+server-id = 2308
+log-bin = mysql-bin
+character-set-server=utf8mb4
+
+[mysqld3307]
+default-time-zone='+08:00'
+port=3307
+socket=/var/lib/mysql3307/3307.sock
+basedir=/usr
+datadir=/var/lib/mysql3307/data
+log_error=/var/lib/mysql3307/3307.err
+general_log_file=/var/lib/mysql3307/3307.log
+pid-file=/var/lib/mysql3307/3307.pid
+log-bin=mysql3307-bin
+user=mysql
+max_allowed_packet = 1G
+#lower_case_table_names = 1
+server_id=143307
+#skip-grant-tables
+relay_log = mysql3307-relay-bin
+lower_case_table_names=0
+#skip-grant-tables
+secure_file_priv="/tmp"
+character-set-server=utf8mb4
+
+[mysqld3308]
+port=3308
+socket=/var/lib/mysql3308/3308.sock
+basedir=/usr
+datadir=/var/lib/mysql3308/data
+log_error=/var/lib/mysql3308/3308.err
+general_log_file=/var/lib/mysql3308/3308.log
+pid-file=/var/lib/mysql3308/3308.pid
+log-bin=mysql3308-bin
+user=mysql
+max_allowed_packet = 1G
+#lower_case_table_names = 1
+server_id=143308
+#skip-grant-tables
+relay_log = mysql3308-relay-bin
+lower_case_table_names=0
+#skip-grant-tables

@@ -1,0 +1,51 @@
+https://getfedora.org
+开放端口
+[root@fedora27 ~]# firewall-cmd --get-active-zones
+FedoraServer
+  interfaces: enp0s3 enp0s8
+
+[root@fedora27 ~]# firewall-cmd --get-zones
+FedoraServer FedoraWorkstation block dmz drop external home internal public trusted work
+
+>>> 开启端口
+firewall-cmd --zone=FedoraServer --add-port=9200/tcp --permanent
+firewall-cmd --zone=FedoraServer --add-port=3306/tcp --permanent
+firewall-cmd --zone=FedoraServer --add-port=9000/tcp --permanent
+firewall-cmd --zone=FedoraServer --add-port=30000/tcp --permanent
+
+ 命令含义：
+--zone #作用域
+--add-port=80/tcp #添加端口，格式为：端口/通讯协议
+--permanent #永久生效，没有此参数重启后失效
+>>> 重启防火墙
+firewall-cmd  --reload
+#--zone=FedoraServer   为对应的zone否则无法开放端口
+systemctl stop firewalld.service             #停止firewall
+systemctl start firewalld.service	     #启动firewall
+systemctl disable firewalld.service        #禁止firewall开机启动
+查看状态：# systemctl status firewalld 或者 firewall-cmd –state
+显示状态：$ firewall-cmd --state
+列出支持的zone：firewall-cmd --get-zones                      
+查看区域信息: $ firewall-cmd –get-active-zones
+查看指定接口所属区域： firewall-cmd --get-zone-of-interface=enp0s8
+拒绝所有包：# firewall-cmd –panic-on
+取消拒绝状态：# firewall-cmd –panic-off
+查看是否拒绝：$ firewall-cmd –query-panic
+更新防火墙规则：# firewall-cmd –reload
+设置默认接口区域firewall-cmd --set-default-zone=FedoraServer
+查看已经开放的端口：firewall-cmd --list-ports
+
+# ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target  #文字模式
+# ln -sf /lib/systemd/system/graphical.target /etc/systemd/system/default.target   #图形模式
+
+启动mysql数据库
+systemctl start mariadb
+设置mysql数据库开机自启动
+systemctl enable mariadb.service
+
+
+在fedora中 执行下面命令  才可以使用idea等界面工具
+ dnf install xorg-x11-xauth
+ dnf install libGL
+
+ifconfig eth0 down / ifconfig eth0 up #卸载和安装网卡

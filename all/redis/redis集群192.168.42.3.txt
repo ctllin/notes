@@ -1,0 +1,279 @@
+ pkill redis-server  杀死所有redis进程
+搭建redis集群需要把密码注释掉  （requirepass ）
+输入命令 " gem install redis " 出现 " ERROR:  Error installing redis redis requires Ruby version >= 2.2.2. " ,需要ruby的版本大于2.2.2
+
+gem install redis 
+yum install ruby (如果ruby的版本太低需要换成高版本 参考地址一、http://rvm.io/ 参考地址二、https://blog.csdn.net/hello_world_qwp/article/details/78261618）
+yum -y install ruby ruby-devel rubygems rpm-build
+
+cd /home/soft/redis-4.0.7
+[root@localhost redis-4.0.7]# mkdir cluster
+[root@localhost redis-4.0.7]# cd cluster
+[root@localhost cluster]# mkdir nodes-6379      
+[root@localhost cluster]# mkdir nodes-6380
+[root@localhost cluster]# mkdir nodes-6381
+[root@localhost cluster]# mkdir nodes-6382
+[root@localhost cluster]# mkdir nodes-6383
+[root@localhost cluster]# mkdir nodes-6384
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6379/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6380/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6381/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6382/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6383/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6384/redis.conf
+
+以cluster/nodes-6379/redis.conf为例
+port 6379 #在不同的服务器和nodes-xx中，端口也不同
+cluster-enabled yes #开启集群
+bind 192.168.42.3  #绑定地址
+daemonize yes #redis后台运行
+cluster-config-file nodes-6379.conf   # 是nodes-6379.conf  不是nodes-6379/redis.conf  在redis启动后会在/home/soft/redis-4.0.7/生成  nodes-6379.conf文件
+cluster-node-timeout 5000
+appendonly yes
+appendfilename "appendonly*.aof"
+dbfilename dump*.rdb
+
+启动redis
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6379/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6380/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6381/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6382/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6383/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6384/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6385/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6386/redis.conf
+
+
+关闭redis  （pkill redis-server会关闭所有的Redis服务）
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6379 shutdown 
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6380 shutdown 
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6381 shutdown 
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6382 shutdown 
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6383 shutdown 
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6384 shutdown 
+
+关闭6379 6380 6381（一个一个的关闭,每个最好停留5秒）后master从6379 6380 6381变成6382 6383 6384
+192.168.42.3:6384> cluster nodes
+a7b283c010b835558ae9875b52e708c1624722a1 192.168.42.3:6381@16381 master,fail - 1525841367572 1525841367370 3 disconnected
+159d801eb4b3998fa9a1aecaa0f6d64fc3059986 192.168.42.3:6384@16384 myself,master - 0 1525841444000 9 connected 10923-16383
+53f1f29e4b00f12b40bf8019b698945ce6f8b8f6 192.168.42.3:6380@16380 master,fail - 1525841352843 1525841352239 2 disconnected
+b9ef8aa5fae601d2f99d85d9e30afae3a55a60b8 192.168.42.3:6383@16383 master - 0 1525841448025 8 connected 5461-10922
+bcc6547a8ebf7c1752808e9116b4ae28132b11df 192.168.42.3:6379@16379 master,fail - 1525841329853 1525841328000 1 disconnected
+4fae1d124d4a6ee088c60a43880d96049a9eafdb 192.168.42.3:6382@16382 master - 0 1525841447015 7 connected 0-5460
+主节点挂掉重新启动6379 6380 6381  然后添加节点 添加失败需要删除对应的appendonly*.aof  dump*.rdb nodes-*.conf 重试
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6379/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6380/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6381/redis.conf
+
+
+
+添加节点6385 6386 
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6385/redis.conf
+/home/soft/redis-4.0.7/src/redis-server /home/soft/redis-4.0.7/cluster/nodes-6386/redis.conf
+/home/soft/redis-4.0.7/src/redis-trib.rb add-node 192.168.42.3:6385 192.168.42.3:6379   #(192.168.42.3:6379已经存在的任何一个主节点)
+添加如果报错  [ERR] Node 192.168.42.3:6385 is not empty. Either the node already knows other nodes (check with CLUSTER NODES) or contains some key in datab
+解决方法：
+1)、将需要新增的节点下aof、rdb等本地备份文件删除；
+2)、同时将新Node的集群配置文件删除,即：删除你redis.conf里面cluster-config-file所在的文件；
+3)、再次添加新节点如果还是报错，则登录新Node,./redis-cli–h x –p对数据库进行清除： 172.168.63.201:7001>  flushdb      #清空当前数据库
+执行/home/soft/redis-4.0.7/src/redis-trib.rb add-node 192.168.42.3:6385 192.168.42.3:6379  如果再次报错将解决办法在执行一次即可
+192.168.42.3:6379> cluster nodes
+8c0dcc4edffa236ab3e2bb7143aca5f5738a0999 192.168.42.3:6381@16381 master - 0 1525843988000 14 connected 10923-16383
+9123386a46420a3714b8b52a7a1e4129b10d4e19 192.168.42.3:6380@16380 master - 0 1525843989151 13 connected 5461-10922
+25f4900f28c232ccc68d6554e193bd26888fbe80 192.168.42.3:6383@16383 slave 8c0dcc4edffa236ab3e2bb7143aca5f5738a0999 0 1525843988000 14 connected
+50c03fc574df3ba0cb16ca356e5cf67e9703753a 192.168.42.3:6385@16385 master - 0 1525843988645 0 connected				#新增的节点
+e2af945c4cd09b45e5253036777f12ff80dbcb0e 192.168.42.3:6382@16382 slave 9123386a46420a3714b8b52a7a1e4129b10d4e19 0 1525843989000 13 connected
+0ef35cb6d4bf874ef754610cd6a12404af964c10 192.168.42.3:6384@16384 slave 2ad84bf20e48727eccd1e6cc0555a18763320153 0 1525843988000 15 connected
+2ad84bf20e48727eccd1e6cc0555a18763320153 192.168.42.3:6379@16379 myself,master - 0 1525843988000 15 connected 0-5460
+
+添加slave节点
+/home/soft/redis-4.0.7/src/redis-trib.rb add-node --slave 192.168.42.29:6385 192.168.42.29:6379（192.168.42.29:6381为要添加的节点 192.168.42.29:6379是现有master节点）
+/home/soft/redis-4.0.7/src/redis-trib.rb add-node --slave 192.168.42.29:6386 192.168.42.29:6379
+
+/home/soft/redis-4.0.7/src/redis-trib.rb add-node --slave 192.168.42.3:6385 192.168.42.3:6379
+/home/soft/redis-4.0.7/src/redis-trib.rb add-node --slave 192.168.42.3:6386 192.168.42.3:6379
+
+
+登陆客户端
+/home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6382
+
+
+删除节点
+/home/soft/redis-4.0.7/src/redis-trib.rb del-node  192.168.42.3:6385 50c03fc574df3ba0cb16ca356e5cf67e9703753a
+/home/soft/redis-4.0.7/src/redis-trib.rb del-node  192.168.42.3:6386 9fd64f48d92c538a2b67bccb3331a83ff0858f1b
+
+启动redis后
+在/home/soft/redis-4.0.7/ 会生成如下文件(对应nodes-*/redis.conf 中配置的cluster-config-file nodes-*.conf )
+nodes-6379.conf
+nodes-6380.conf
+nodes-6381.conf
+nodes-6382.conf
+nodes-6383.conf
+nodes-6384.conf
+appendonly6379.aof
+appendonly6380.aof
+appendonly6381.aof
+appendonly6382.aof
+appendonly6383.aof
+appendonly6384.aof
+
+
+查看生成的文件
+[root@localhost redis-4.0.7]# cat nodes-6379.conf 
+26edd7c5c4b98ad59e61415eba10698b27aa1da9 192.168.42.3:6382@16382 slave fc20cb1c904f9f5d0d2380131404766354a1ae43 0 1525769342000 4 connected
+13610d95014165b8f24e0e09613a332b30b47193 192.168.42.3:6380@16380 master - 0 1525769343000 2 connected 5461-10922
+fc20cb1c904f9f5d0d2380131404766354a1ae43 192.168.42.3:6381@16381 master - 0 1525769343000 3 connected 10923-16383
+3fc4dea070ea5a510adb598155ff7626214fc1ee 192.168.42.3:6383@16383 slave 50e141d187f33e958ad6034907e33f551f0700a2 0 1525769343000 5 connected
+158e73f00e01b82e15bc6b796005993f10c9a088 192.168.42.3:6384@16384 slave 13610d95014165b8f24e0e09613a332b30b47193 0 1525769343197 6 connected
+50e141d187f33e958ad6034907e33f551f0700a2 192.168.42.3:6379@16379 myself,master - 0 1525769341000 1 connected 0-5460
+vars currentEpoch 6 lastVoteEpoch 0
+[root@localhost redis-4.0.7]# cat nodes-6380.conf 
+13610d95014165b8f24e0e09613a332b30b47193 192.168.42.3:6380@16380 myself,master - 0 1525769343000 2 connected 5461-10922
+50e141d187f33e958ad6034907e33f551f0700a2 192.168.42.3:6379@16379 master - 0 1525769343582 1 connected 0-5460
+26edd7c5c4b98ad59e61415eba10698b27aa1da9 192.168.42.3:6382@16382 slave fc20cb1c904f9f5d0d2380131404766354a1ae43 0 1525769344186 4 connected
+158e73f00e01b82e15bc6b796005993f10c9a088 192.168.42.3:6384@16384 slave 13610d95014165b8f24e0e09613a332b30b47193 0 1525769343000 6 connected
+fc20cb1c904f9f5d0d2380131404766354a1ae43 192.168.42.3:6381@16381 master - 0 1525769343171 3 connected 10923-16383
+3fc4dea070ea5a510adb598155ff7626214fc1ee 192.168.42.3:6383@16383 slave 50e141d187f33e958ad6034907e33f551f0700a2 0 1525769343683 5 connected
+vars currentEpoch 6 lastVoteEpoch 0
+
+开启集群(只需要一下，下次启动redis后集群直接可以使用)
+/home/soft/redis-4.0.7/src/redis-trib.rb create --replicas 1 192.168.42.3:6379 192.168.42.3:6380  192.168.42.3:6381 192.168.42.3:6382 192.168.42.3:6383 192.168.42.3:6384
+/home/soft/redis-4.0.7/src/redis-trib.rb create --replicas 1 192.168.42.29:6379 192.168.42.29:6380  192.168.42.29:6381 192.168.42.29:6382 192.168.42.29:6383 192.168.42.29:6384
+
+
+集群启动后看到
+dump6379.rdb
+dump6380.rdb
+dump6381.rdb
+dump6382.rdb
+dump6383.rdb
+dump6384.rdb
+
+
+重新建立集群
+需要删掉  /home/soft/redis-4.0.7/appendonly*.aof   /home/soft/redis-4.0.7/dump*.rdb
+
+测试master挂掉时三个master不要一起关闭，要一个一个的关闭
+
+redis cluster配置文件和集群状态详解 redis cluster命令
+第一步进入 /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6379
+例如：
+192.168.42.3:6379> cluster nodes
+158e73f00e01b82e15bc6b796005993f10c9a088 192.168.42.3:6384@16384 slave 13610d95014165b8f24e0e09613a332b30b47193 0 1525782710123 6 connected
+fc20cb1c904f9f5d0d2380131404766354a1ae43 192.168.42.3:6381@16381 master - 0 1525782710000 3 connected 10923-16383
+26edd7c5c4b98ad59e61415eba10698b27aa1da9 192.168.42.3:6382@16382 slave fc20cb1c904f9f5d0d2380131404766354a1ae43 0 1525782710000 4 connected
+50e141d187f33e958ad6034907e33f551f0700a2 192.168.42.3:6379@16379 myself,master - 0 1525782709000 1 connected 0-5460 [5798-<-13610d95014165b8f24e0e09613a332b30b47193]
+13610d95014165b8f24e0e09613a332b30b47193 192.168.42.3:6380@16380 master - 0 1525782710123 2 connected 5461-10922
+3fc4dea070ea5a510adb598155ff7626214fc1ee 192.168.42.3:6383@16383 slave 50e141d187f33e958ad6034907e33f551f0700a2 0 1525782711128 5 connected
+192.168.42.3:6379> cluster myid 
+"50e141d187f33e958ad6034907e33f551f0700a2"
+192.168.42.3:6379> 
+下面为命令进入客户端后直接输入命令即可
+集群(cluster)  
+cluster info       打印集群的信息
+cluster nodes   列出集群当前已知的所有节点(node)，以及这些节点的相关信息   
+节点(node)  
+cluster meet <ip> <port>       将ip和port所指定的节点添加到集群当中，让它成为集群的一份子  
+cluster forget <node_id>        从集群中移除node_id指定的节点
+cluster replicate <node_id>   将当前节点设置为node_id指定的节点的从节点
+cluster saveconfig                   将节点的配置文件保存到硬盘里面
+cluster slaves <node_id>       列出该slave节点的master节点
+cluster set-config-epoch        强制设置configEpoch 
+槽(slot)  
+cluster addslots <slot> [slot ...]                         将一个或多个槽(slot)指派(assign)给当前节点
+cluster delslots <slot> [slot ...]                          移除一个或多个槽对当前节点的指派 
+cluster flushslots                                                移除指派给当前节点的所有槽，让当前节点变成一个没有指派任何槽的节点 
+cluster setslot <slot> node <node_id>            将槽slot指派给node_id指定的节点，如果槽已经指派给另一个节点，那么先让另一个节点删除该槽，然后再进行指派 
+cluster setslot <slot> migrating <node_id>   将本节点的槽slot迁移到node_id指定的节点中  
+cluster setslot <slot> importing <node_id>   从node_id 指定的节点中导入槽slot到本节点 
+cluster setslot <slot> stable                             取消对槽slot的导入(import)或者迁移(migrate) 
+键(key)  
+cluster keyslot <key>                                       计算键key应该被放置在哪个槽上  
+cluster countkeysinslot <slot>                         返回槽slot目前包含的键值对数量 
+cluster getkeysinslot <slot> <count>              返回count个slot槽中的键
+其它
+cluster myid       返回节点的ID
+cluster slots       返回节点负责的slot
+cluster reset      重置集群，慎用
+
+查找以 w3c 为开头的 key：(看到的只是改redis中的keys，集群中其他的keys看不到)
+192.168.42.3:6379> KEYS w3c*
+1) "w3c3"
+2) "w3c1"
+3) "w3c2"
+获取 redis 中所有的 key 可用使用 *。
+
+192.168.42.3:6379> KEYS *
+1) "w3c3"
+2) "w3c1"
+3) "w3c2"
+
+redis cluster在设计的时候，就考虑到了去中心化，去中间件，也就是说，集群中的每个节点都是平等的关系，都是对等的，每个节点都保存各自的数据和整个集群的状态。每个节点都和其他所有节点连接，而且这些连接保持活跃，这样就保证了我们只需要连接集群中的任意一个节点，就可以获取到其他节点的数据。
+Redis 集群没有并使用传统的一致性哈希来分配数据，而是采用另外一种叫做哈希槽 (hash slot)的方式来分配的。redis cluster 默认分配了 16384 个slot，当我们set一个key 时，会用CRC16算法来取模得到所属的slot，然后将这个key 分到哈希槽区间的节点上，具体算法就是：CRC16(key) % 16384。所以我们在测试的时候看到set 和 get 的时候，直接跳转到了7000端口的节点。
+Redis 集群会把数据存在一个 master 节点，然后在这个 master 和其对应的salve 之间进行数据同步。当读取数据时，也根据一致性哈希算法到对应的 master 节点获取数据。只有当一个master 挂掉之后，才会启动一个对应的 salve 节点，充当 master 。
+需要注意的是：必须要3个或以上的主节点，否则在创建集群时会失败，并且当存活的主节点数小于总节点数的一半时，整个集群就无法提供服务了。
+六台机子无论在那个设置值，都可以在6台中的任意一台获取
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6379    
+192.168.42.3:6379> set id2 100
+OK
+192.168.42.3:6379> get id2
+"100"
+192.168.42.3:6379> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6380
+192.168.42.3:6380> get id2
+-> Redirected to slot [5125] located at 127.0.0.1:6379
+"100"
+127.0.0.1:6379> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6381
+192.168.42.3:6381> get id2
+-> Redirected to slot [5125] located at 127.0.0.1:6379
+"100"
+127.0.0.1:6379> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6382
+192.168.42.3:6382> get id2
+-> Redirected to slot [5125] located at 127.0.0.1:6379
+"100"
+127.0.0.1:6379> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6383
+192.168.42.3:6383> get id2
+-> Redirected to slot [5125] located at 127.0.0.1:6379
+"100"
+127.0.0.1:6379> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6384
+192.168.42.3:6384> get id2
+-> Redirected to slot [5125] located at 127.0.0.1:6379
+"100"
+127.0.0.1:6379> 
+
+
+
+
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6379
+192.168.42.3:6379> get id
+-> Redirected to slot [7568] located at 127.0.0.1:6380
+"10"
+127.0.0.1:6380> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6380
+192.168.42.3:6380> get id
+"10"
+192.168.42.3:6380> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6381
+192.168.42.3:6381> get id
+-> Redirected to slot [7568] located at 127.0.0.1:6380
+"10"
+127.0.0.1:6380> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6382
+192.168.42.3:6382> get id
+-> Redirected to slot [7568] located at 127.0.0.1:6380
+"10"
+127.0.0.1:6380> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6383
+192.168.42.3:6383> get id
+-> Redirected to slot [7568] located at 127.0.0.1:6380
+"10"
+127.0.0.1:6380> 
+[root@localhost ~]# /home/soft/redis-4.0.7/src/redis-cli -h 192.168.42.3 -c -p 6384
+192.168.42.3:6384> get id
+-> Redirected to slot [7568] located at 127.0.0.1:6380
+"10"
+127.0.0.1:6380> 

@@ -1,0 +1,62 @@
+ 搭建redis集群需要把密码注释掉  （requirepass ）
+
+以cluster/nodes-6379/redis.conf为例
+port 6379 #在不同的服务器和nodes-xx中，端口也不同
+cluster-enabled yes
+bind 192.168.42.29
+# daemonize yes #redis后台运行
+cluster-config-file nodes-6379.conf 
+cluster-node-timeout 5000
+appendonly yes
+
+
+
+[root@localhost redis-4.0.7]# mkdir cluster
+[root@localhost redis-4.0.7]# cd cluster
+[root@localhost cluster]# mkdir nodes-6379      
+[root@localhost cluster]# mkdir nodes-6380
+[root@localhost cluster]# mkdir nodes-6381
+[root@localhost cluster]# mkdir nodes-6382
+[root@localhost cluster]# mkdir nodes-6383
+[root@localhost cluster]# mkdir nodes-6384
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6379/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6380/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6381/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6382/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6383/redis.conf
+[root@localhost redis-4.0.7]# cp redis.conf cluster/nodes-6384/redis.conf
+dnf install ruby  
+gem install redis (centos7 需要 gem update)
+yum -y install ruby ruby-devel rubygems rpm-build
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6379/redis.conf &
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6380/redis.conf &
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6381/redis.conf &
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6382/redis.conf &
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6383/redis.conf &
+cd  /home/soft/redis-4.0.7/ && src/redis-server cluster/nodes-6384/redis.conf &
+src/redis-trib.rb create --replicas 1 192.168.42.29:6379 192.168.42.29:6380  192.168.42.29:6381 192.168.42.29:6382 192.168.42.29:6383 192.168.42.29:6384
+[root@localhost redis-4.0.7]# src/redis-trib.rb create --replicas 1 192.168.42.29:6379 192.168.42.29:6380  192.168.42.29:6381 192.168.42.29:6382 192.168.42.29:6383 192.168.42.29:6384
+>>> Creating cluster
+>>> Performing hash slots allocation on 6 nodes...
+Using 3 masters:
+192.168.42.29:6379
+192.168.42.29:6380
+192.168.42.29:6381
+Adding replica 192.168.42.29:6383 to 192.168.42.29:6379
+Adding replica 192.168.42.29:6384 to 192.168.42.29:6380
+Adding replica 192.168.42.29:6382 to 192.168.42.29:6381
+>>> Trying to optimize slaves allocation for anti-affinity
+[WARNING] Some slaves are in the same host as their master
+M: 7ffafc408fadffbd5a9ed884a6c432789fe0929d 192.168.42.29:6379
+   slots:0-5460 (5461 slots) master
+M: 35f6f5ff0d08ce1743600f748d643bbec0f83cbb 192.168.42.29:6380
+   slots:5461-10922 (5462 slots) master
+M: e7f8a85b2689033ad4ba82d0acecc47898e02203 192.168.42.29:6381
+   slots:10923-16383 (5461 slots) master
+S: 7b20332301c8a8370c057cddc5230c9579f59054 192.168.42.29:6382
+   replicates 35f6f5ff0d08ce1743600f748d643bbec0f83cbb
+S: a5fce2494d67ac1bc721dfa0d6714a72cf946c97 192.168.42.29:6383
+   replicates e7f8a85b2689033ad4ba82d0acecc47898e02203
+S: 1bf2cea1339121aa6a769e437f4837efe0ff4232 192.168.42.29:6384
+   replicates 7ffafc408fadffbd5a9ed884a6c432789fe0929d
+Can I set the above configuration? (type 'yes' to accept): yes

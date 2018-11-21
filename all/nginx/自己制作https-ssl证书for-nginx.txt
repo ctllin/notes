@@ -1,0 +1,48 @@
+ssl证书是个很让人纠结的东西，专业证书要么贵要么不给力，自己制作一个吧目前网上又没有特别给力靠谱的教程，今天在公司纠结了一下，搞定了。
+
+首先要感谢这篇文章的作者，本文主要是参考这篇文章。
+
+闲话休题，咱们言归正传。
+
+首先找个linux，装个openssl（网上很多靠谱的教程，详细步骤略过）。
+
+然后便开始一堆命令
+
+openssl genrsa -des3 -out ssl.key 2048
+这一步需要输入一个密码，随便输一个就行了，后面貌似只需要用一次。。
+
+mv ssl.key xxx.key
+openssl rsa -in xxx.key -out ssl.key
+rm xxx.key
+上面第二步的时候需要输入前面那个密码
+
+openssl req -new -key ssl.key -out ssl.csr
+这一步需要填写很多信息，重点是Common Name，就是你需要使用这个证书的域名，貌似可以使用通配符。最后的challenge password不填
+
+openssl x509 -req -days 3650 -in ssl.csr -signkey ssl.key -out ssl.crt
+cat ssl.key ssl.crt > ssl.pem
+到此为止我们得到了四个文件
+
+ssl.csr
+ssl.crt
+ssl.key
+ssl.pem
+下面开始纠结服务器配置吧！
+
+nginx
+在server里面写一段：
+
+ssl on;
+ssl_certificate ssl.pem;
+ssl_certificate_key ssl.key;
+lighttpd
+ssl.engine = "enable"
+ssl.pemfile= "ssl.pem"
+ssl.ca-file="ssl.pem"
+apache
+SSLEngine on
+SSLCertificateFile "ssl.crt"
+SSLCertificateKeyFile "ssl.key"
+这样服务器端就配置好了，但是假证书毕竟是假证书，客户端还需要安装才能不被警告。客户端安装方法很简单，用IE或chrome打开，并无视警告，然后查看服务器证书信息，把证书导出到文件，再双击证书文件安装到受信任的根证书颁发机构，然后就一劳永逸了。
+
+大功告成

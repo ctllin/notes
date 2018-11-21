@@ -1,0 +1,86 @@
+zookeeper下载地址：http://mirror.bit.edu.cn/apache/zookeeper/
+三台zookeeper服务器时间需要一致
+1.ZooKeeper
+	1.1 zk可以用来保证数据在zk集群之间的数据的事务性一致。
+2.如何搭建ZooKeeper服务器集群
+	2.1 zk服务器集群规模不小于3个节点，要求各服务器之间系统时间要保持一致。
+	2.2 在hadoop0的/usr/local目录下，解压缩zk....tar.gz，设置环境变量
+	2.3 在conf目录下，修改文件 vi zoo_sample.cfg  zoo.cfg
+	2.4 编辑该文件，执行vi zoo.cfg
+		修改dataDir=/usr/local/zk/data
+		新增server.0=hadoop0:2888:3888    
+		    server.1=hadoop1:2888:3888
+			server.2=hadoop2:2888:3888
+
+同一台机子
+server.1=192.168.42.29:2881:3881
+server.2=192.168.42.29:2882:3882
+server.3=192.168.42.29:2883:3883
+server.4=192.168.42.29:2884:3884
+server.5=192.168.42.29:2885:3885
+
+server.A=B：C：D：其中 A 是一个数字，表示这个是第几号服务器；B 是这个服务器的 ip 地址；
+C 表示的是这个服务器与集群中的 Leader 服务器交换信息的端口；
+D 表示的是万一集群中的 Leader 服务器挂了，需要一个端口来重新进行选举，选出一个新的 Leader，
+而这个端口就是用来执行选举时服务器相互通信的端口。
+
+	2.5 创建文件夹mkdir /usr/local/zk/data
+	2.6 在data目录下，创建文件myid，值为0
+	2.7 把zk目录复制到hadoop1和hadoop2中
+	2.8 把hadoop1中相应的myid的值改为1
+	    把hadoop2中相应的myid的值改为2
+	2.9 启动，在三个节点上分别执行命令zkServer.sh start
+	2.10 检验，在三个节点上分别执行命令zkServer.sh status
+	
+'$'\r''/myid  找不到myid原因dos和unix文件格式问题需要转配置文件	
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2181/conf/zoo.cfg
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2181/conf/configuration.xsl
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2181/conf/log4j.properties
+dos2unix	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2181/data/myid
+
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2182/conf/zoo.cfg
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2182/conf/configuration.xsl
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2182/conf/log4j.properties
+dos2unix	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2182/data/myid
+
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2183/conf/zoo.cfg
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2183/conf/configuration.xsl
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2183/conf/log4j.properties
+dos2unix	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2183/data/myid
+
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2184/conf/zoo.cfg
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2184/conf/configuration.xsl
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2184/conf/log4j.properties
+dos2unix	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2184/data/myid
+
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2185/conf/zoo.cfg
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2185/conf/configuration.xsl
+dos2unix 	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2185/conf/log4j.properties
+dos2unix	/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2185/data/myid
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2181/bin/zkServer.sh status
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2182/bin/zkServer.sh status
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2183/bin/zkServer.sh status
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2184/bin/zkServer.sh status
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta2185/bin/zkServer.sh status
+
+
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2181/bin/zkServer.sh start /home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2181/conf/zoo.cfg
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2182/bin/zkServer.sh start /home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2182/conf/zoo.cfg
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2183/bin/zkServer.sh start /home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2183/conf/zoo.cfg
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2181/bin/zkServer.sh status
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2182/bin/zkServer.sh status
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2183/bin/zkServer.sh status
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2184/bin/zkServer.sh status
+
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2181/bin/zkServer.sh stop
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2182/bin/zkServer.sh stop 
+/home/soft/cluster-zookeeper-3.5.3-beta/zookeeper-3.5.3-beta-2183/bin/zkServer.sh stop
+pkill -f QuorumPeerMain  杀死zookeeper进程(根据名称)
+

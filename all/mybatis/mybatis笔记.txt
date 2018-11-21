@@ -1,0 +1,57 @@
+1.org.mybatis.generator.plugins.CachePlugin###
+这个插件是一个挺有用的插件，用来生成在XML中的<cache>元素（这个插件只针对MyBatis3/MyBatis3Simple有效哈），这个插件需要一些配置，支持的配置属性有：cache_eviction，cache_flushInterval，cache_readOnly，cache_size，cache_type，和cache元素的属性一一对应，很好的一点，在<table>元素中，可以通过定义property元素，来覆盖<plugin>元素中提供的默认值；
+
+2.org.mybatis.generator.plugins.CaseInsensitiveLikePlugin###
+这个插件用来在XXXExample类中生成大小写敏感的LIKE方法（插件本身用处不大，但是我们可以通过这个插件学习给XXXExample类添加额外的方法）
+
+3.org.mybatis.generator.plugins.EqualsHashCodePlugin###
+这个插件用来给Java模型生成equals和hashcode方法；注意下，如果Domain类有rootClass，需要重新处理下生成的代码（因为MBG是不会考虑rootClass相关内容的，甚至都不会加载rootClass，可以参考配置文件中rootClass相关说明）；
+
+4.org.mybatis.generator.plugins.FluentBuilderMethodsPlugin###
+生成带有fluent风格的model代码。
+
+6.org.mybatis.generator.plugins.MapperConfigPlugin###
+比较有用的一个插件，可以用来帮助生成一个默认的MapperConfig.xml文件骨架，在这个骨架文件中完成了本次生成的mapper.xml文件的配置；
+该插件支持的配置属性有：
+fileName：配置文件名称，默认为MapperConfig.xml；
+targetPackage：配置文件所在的包，同MBG配置文件中的所有targetPackage配置；
+targetProject：配置文件所在目录，同MBG配置文件中的所有targetProject配置；
+
+7.org.mybatis.generator.plugins.RenameExampleClassPlugin###
+这个插件可以使用正则表达式的方式来重命名生成的XXXExample类，通过配置 searchString和replaceString属性来完成（这个实现原理请参考MBG配置文件中的columnRenamingRule元素），
+一个例子，比如要xxxExample改成xxxCriteria，只需要配置：
+[html] view plain copy
+<property name="searchString" value="Example$" />  
+<property name="replaceString" value="Criteria" />  
+
+8.org.mybatis.generator.plugins.RowBoundsPlugin###
+这个插件可以生成一个新的selectByExample方法，这个方法可以接受一个RowBounds参数，主要用来实现分页（当然，我们后面会生成我们自己的分页查询函数），这个插件只针对MyBatis3/MyBatis3Simple有效；
+
+9.org.mybatis.generator.plugins.SerializablePlugin###
+这个插件主要用来为生成的Java模型类添加序列化接口，并生成serialVersionUID字段；
+有两个配置项：
+[html] view plain copy
+addGWTInterface：这个是针对GWT的，我们忽略；  
+suppressJavaInterface：这个参数是必须要填的，我们设置为false就可以了；  
+
+10.org.mybatis.generator.plugins.SqlMapConfigPlugin###
+这个插件生成一个SqlMapConfig文件，包含sqlMap条目所有生成的SQL映射。这演示了hooking生成生命周期并生成额外的XML文件。
+
+11.org.mybatis.generator.plugins.ToStringPlugin###
+为生成的Java模型创建一个toString方法
+
+12.org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin
+此插件可用于指定充当主键的列，即使它们没有严格定义为数据库中的主键。
+详细请参考官方文档:http://www.mybatis.org/generator/reference/plugins.html
+
+
+关于使用mybatis generator无法生成select update delete primarykey的解决办法
+因为本人使用的是mysql-connector-java-6.0.6.jar 导致一直无法生成select update delete primarykey
+将版本换成mysql-connector-java-5.1.34.jar
+顺便再将driverClass=”com.mysql.cj.jdbc.Driver”
+换回driverClass=”com.mysql.jdbc.Driver”
+ok,现在就可以顺利的生成需要的方法了.
+因为项目的原因小弟无法继续查找资料搞清楚为何使用高版本的mysql-connector-java无法生成select update delete primarykey
+希望清楚原因的朋友告诉我一下,谢谢.
+版权声明：本文为博主原创文章，未经博主允许不得转载。	http
+

@@ -1,0 +1,2 @@
+添加此参数-DarchetypeCatalog=internal
+在Intellij IDEA中添加 archetypeCatalog=internal

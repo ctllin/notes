@@ -1,0 +1,2 @@
+D:
+cd D:\E盘\JavaWeb\airbank\airbanksso && mvn compile war:war && cd D:\E盘\JavaWeb\airbank\airshop && mvn compile war:war && cd D:\E盘\JavaWeb\airbank\apiairbank && mvn compile war:war && copy D:\E盘\JavaWeb\airbank\airbanksso\target\airbanksso.war E:\Users\ctl\Desktop\airbank\ && copy D:\E盘\JavaWeb\airbank\airshop\target\airshop.war E:\Users\ctl\Desktop\airbank\ && copy D:\E盘\JavaWeb\airbank\apiairbank\target\apiairbank.war E:\Users\ctl\Desktop\airbank\

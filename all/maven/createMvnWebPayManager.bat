@@ -1,0 +1,1 @@
+mvn archetype:generate -DgroupId=com.xilehang.paymanager -DartifactId=paymanager -DarchetypeArtifactId=maven-archetype-webapp  -DinteractiveMode=false -DarchetypeCatalog=internal && cd paymanager && mvn eclipse:eclipse

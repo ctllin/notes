@@ -1,0 +1,9 @@
+mvn安装
+mvn install:install-file -Dfile=D:\apache-maven-3.5.2\selfLib\ctl-1.0.jar -DgroupId=com.ctl.common.util -DartifactId=ctl -Dversion=1.0 -Dpackaging=jar
+
+安装完毕后，就在 pom.xml 中声明 ctl的坐标 
+<dependency>
+      <groupId>com.ctl.common.util</groupId>
+      <artifactId>ctl</artifactId>
+      <version>1.0</version>
+ </dependency>

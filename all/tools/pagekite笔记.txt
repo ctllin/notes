@@ -1,0 +1,9 @@
+https://pagekite.net/
+可以将本机(localhost)映射,映射后外网可以访问本机
+PageKite for Windows
+1、Download and install Python 2.7, from Python.org.
+2、Download pagekite.py.
+3、Save the program to your Desktop.
+4、Double-click the icon to run PageKite! （安装Python2.7后 让 pagekite.py 用python.exe打开。打开后按照提示操作）
+The first time you run the program, it will ask a few questions and guide you through the process of setting up your first kite.
+Note: Python 3 does not currently work. Please use Python 2.7.

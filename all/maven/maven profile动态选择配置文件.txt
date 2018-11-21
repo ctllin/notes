@@ -1,0 +1,95 @@
+resources/config/appclication-dev.properties   配置如下：
+profile.env=dev
+env.datasource.driver=com.mysql.cj.jdbc.Driver
+env.datasource.jdbcUrl=jdbc:mysql://192.168.42.29:3306/dev?useUnicode=true&characterEncoding=utf-8&useSSL=false
+env.datasource.username=ctl
+env.datasource.password=liebe
+
+resources/config/appclication-proc.properties   配置如下：
+profile.env=proc
+env.datasource.driver=com.mysql.cj.jdbc.Driver
+env.datasource.jdbcUrl=jdbc:mysql://192.168.42.29:3306/proc?useUnicode=true&characterEncoding=utf-8&useSSL=false
+env.datasource.username=ctl
+env.datasource.password=liebe
+
+resources/config/appclication-test.properties   配置如下：
+profile.env=test
+env.datasource.driver=com.mysql.cj.jdbc.Driver
+env.datasource.jdbcUrl=jdbc:mysql://192.168.42.29:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+env.datasource.username=ctl
+env.datasource.password=liebe
+
+resources/config.properties   配置如下：
+env=${profile.env}
+jdbc.driver=${env.datasource.driver}
+jdbc.url=${env.datasource.jdbcUrl}
+jdbc.username=${env.datasource.username}
+jdbc.password=${env.datasource.password}
+
+执行mvn compile -P proc 后target编译后的额config.properties变更为：
+env=proc
+jdbc.driver=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://192.168.42.29:3306/proc?useUnicode=true&characterEncoding=utf-8&useSSL=false
+jdbc.username=ctl
+jdbc.password=liebe
+
+执行mvn compile -P test 后target编译后的额config.properties变更为：
+env=test
+jdbc.driver=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://192.168.42.29:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+jdbc.username=ctl
+jdbc.password=liebe
+
+执行mvn compile -P dev 后target编译后的额config.properties变更为：
+env=dev
+jdbc.driver=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://192.168.42.29:3306/dev?useUnicode=true&characterEncoding=utf-8&useSSL=false
+jdbc.username=ctl
+jdbc.password=liebe
+
+<profiles>
+    <profile>
+      <!-- 本地开发环境 -->
+      <id>dev</id> <!-- mvn compile -P dev & mvn package -P dev -->
+      <properties> <!-- profiles.activez的值与id值保持一致 -->
+        <profiles.active>dev</profiles.active>  <!--src/main/resources/config/application-${profiles.active}.properties   用此处配置的dev替换,变成application-dev.properteis -->
+      </properties>
+      <!-- 设置默认激活这个配置 -->
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <!-- 发布环境 -->
+      <id>proc</id> <!-- mvn compile -P proc & mvn package -P proc -->
+      <properties> <!-- profiles.activez的值与id值保持一致 -->
+        <profiles.active>proc</profiles.active>  <!--src/main/resources/config/application-${profiles.active}.properties   用此处配置的proc替换,变成application-proc.properteis   -->
+      </properties>
+    </profile>
+    <profile>
+      <!-- 测试环境 -->
+      <id>test</id> <!-- mvn compile -P test & mvn package -P test -->
+      <properties> <!-- profiles.activez的值与id值保持一致 -->
+        <profiles.active>test</profiles.active>   <!--src/main/resources/config/application-${profiles.active}.properties   用此处配置的test替换,变成application-test.properteis   -->
+      </properties>
+    </profile>
+  </profiles>
+  <build>
+    <filters>
+      <filter>src/main/resources/config/application-${profiles.active}.properties</filter><!-- maven profile动态选择配置文件 -->
+    </filters>
+    <finalName>pmanager</finalName>
+    <resources>
+      <resource><!-- add mybatis mapper to classpath -->
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/mapper/*Mapper.xml</include>
+          <include>**/mappers/*Mapper.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>true</filtering><!-- maven profile动态选择配置文件 -->
+      </resource>
+    </resources>
+  </build>

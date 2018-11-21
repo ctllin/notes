@@ -1,0 +1,130 @@
+远程仓库
+[ctl@ctl test]$ pwd
+/home/ctl/test
+[ctl@ctl test]$ ll -a
+total 28
+drwxrwxr-x.  4 ctl ctl 4096 Mar  7 20:19 .
+drwx------. 33 ctl ctl 4096 Mar  7 20:21 ..
+-rw-rw-r--.  1 ctl ctl   30 Mar  7 20:07 add.txt
+-rw-rw-r--.  1 ctl ctl    4 Mar  7 20:10 ctl.txt
+drwxrwxr-x.  2 ctl ctl 4096 Mar  7 20:21 flod
+drwxrwxr-x.  8 ctl ctl 4096 Mar  7 20:22 .git
+-rw-rw-r--.  1 ctl ctl   27 Mar  7 19:54 readme.txt
+
+克隆远程仓库
+[oracle@ctl test]$ git clone ctl@192.168.42.19:/home/ctl/test/.git
+Initialized empty Git repository in /home/oracle/test/test/.git/
+ctl@192.168.42.19's password: 
+remote: Counting objects: 13, done.
+remote: Compressing objects: 100% (6/6), done.
+Receiving objects: 100% (13/13), 976 bytes, done.
+Resolving deltas: 100% (1/1), done.
+remote: Total 13 (delta 1), reused 0 (delta 0)
+[oracle@ctl test]$ ll -a
+total 12
+drwxr-xr-x.  3 oracle dba 4096 Mar  7 20:26 .
+drwx------. 31 oracle dba 4096 Mar  7 20:25 ..
+drwxr-xr-x.  4 oracle dba 4096 Mar  7 20:26 test
+[oracle@ctl test]$ cd test
+[oracle@ctl test]$ ll
+total 16
+-rw-r--r--. 1 oracle dba   30 Mar  7 20:26 add.txt
+-rw-r--r--. 1 oracle dba    4 Mar  7 20:26 ctl.txt
+drwxr-xr-x. 2 oracle dba 4096 Mar  7 20:26 flod
+-rw-r--r--. 1 oracle dba   27 Mar  7 20:26 readme.txt
+
+--日志显示到一行
+ git log --pretty=oneline
+
+--查看版本号
+[oracle@ctl flod]$ git reflog
+6ed660d HEAD@{0}: clone: from ctl@192.168.42.19:/home/ctl/test/.git
+
+　查看分支：git branch
+　　创建分支：git branch name
+　　切换分支：git checkout name
+　　创建+切换分支：git checkout –b name
+　　合并某分支到当前分支：git merge name
+　　删除分支：git branch –d name
+
+如何用命令将本地项目上传到git
+1、（先进入项目文件夹）通过命令 git init 把这个目录变成git可以管理的仓库
+git init
+2、把文件添加到版本库中，使用命令 git add .添加到暂存区里面去，不要忘记后面的小数点“.”，意为添加文件夹下的所有文件
+git add .
+3、用命令 git commit告诉Git，把文件提交到仓库。引号内为提交说明
+git commit -m 'first commit'
+4、关联到远程库
+git remote add origin 你的远程库地址
+如：git remote add origin https://github.com/cade8800/ionic-demo.git
+5、获取远程库与本地同步合并（如果远程库不为空必须做这一步，否则后面的提交会失败）
+git pull --rebase origin master
+6、把本地库的内容推送到远程，使用 git push命令，实际上是把当前分支master推送到远程。执行此命令后会要求输入用户名、密码，验证通过后即开始上传。
+git push -u origin master
+*、状态查询命令
+git status
+
+Git本地服务器搭建及使用详解
+Git本地服务器搭建及使用
+Git是一款免费、开源的分布式版本控制系统。众所周知的Github便是基于Git的开源代码库以及版本控制系统，由于其远程托管服务仅对开源免费，所以搭建本地Git服务器也是个较好的选择，本文将对此进行详细讲解。（推荐一家提供私有源代码免费托管的网站：Bitbucket，目前支持一个项目5个成员）
+
+搭建环境：
+服务器：intel i5 / 8g内存 / 64位操作系统  Ubuntu 15.04
+
+PC： intel i5 / 8g内存 / 64位操作系统  Windows 7 旗舰版
+
+第一部分：Git的基本操作
+初始化操作
+    $ git config -global user.name <name> #设置提交者名字
+    $ git config -global user.email <email> #设置提交者邮箱
+    $ git config -global core.editor <editor> #设置默认文本编辑器
+    $ git config -global merge.tool <tool> #设置解决合并冲突时差异分析工具
+    $ git config -list #检查已有的配置信息
+创建新版本库
+    $ git clone <url> #克隆远程版本库
+    $ git init #初始化本地版本库
+修改和提交
+    $ git add . #添加所有改动过的文件
+    $ git add <file> #添加指定的文件
+    $ git mv <old> <new> #文件重命名
+    $ git rm <file> #删除文件
+    $ git rm -cached <file> #停止跟踪文件但不删除
+    $ git commit -m <file> #提交指定文件
+    $ git commit -m “commit message” #提交所有更新过的文件
+    $ git commit -amend #修改最后一次提交
+    $ git commit -C HEAD -a -amend #增补提交（不会产生新的提交历史纪录）
+查看提交历史
+    $ git log #查看提交历史
+    $ git log -p <file> #查看指定文件的提交历史
+    $ git blame <file> #以列表方式查看指定文件的提交历史
+    $ gitk #查看当前分支历史纪录
+    $ gitk <branch> #查看某分支历史纪录
+    $ gitk --all #查看所有分支历史纪录
+    $ git branch -v #每个分支最后的提交
+    $ git status #查看当前状态
+    $ git diff #查看变更内容
+撤消操作
+    $ git reset -hard HEAD #撤消工作目录中所有未提交文件的修改内容
+    $ git checkout HEAD <file1> <file2> #撤消指定的未提交文件的修改内容
+    $ git checkout HEAD. #撤消所有文件
+    $ git revert <commit> #撤消指定的提交
+分支与标签
+    $ git branch #显示所有本地分支
+    $ git checkout <branch/tagname> #切换到指定分支或标签
+    $ git branch <new-branch> #创建新分支
+    $ git branch -d <branch> #删除本地分支
+    $ git tag #列出所有本地标签
+    $ git tag <tagname> #基于最新提交创建标签
+    $ git tag -d <tagname> #删除标签
+合并与衍合
+    $ git merge <branch> #合并指定分支到当前分支
+    $ git rebase <branch> #衍合指定分支到当前分支
+远程操作
+    $ git remote -v #查看远程版本库信息
+    $ git remote show <remote> #查看指定远程版本库信息
+    $ git remote add <remote> <url> #添加远程版本库
+    $ git fetch <remote> #从远程库获取代码
+    $ git pull <remote> <branch> #下载代码及快速合并
+    $ git push <remote> <branch> #上传代码及快速合并
+    $ git push <remote> : <branch>/<tagname> #删除远程分支或标签
+    $ git push -tags #上传所有标签

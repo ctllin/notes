@@ -1,0 +1,27 @@
+1、下载安装 libfastcommon
+libfastcommon是从 FastDFS 和 FastDHT 中提取出来的公共 C 函数库，基础环境，安装即可 。
+https://sourceforge.net/projects/libfastcommon/files/latest/download
+/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf start
+/usr/bin/fdfs_storaged /etc/fdfs/storage.conf start
+/etc/fdfs
+/home/soft/fastdfs/file/data  
+
+https://nginx.org/download/nginx-1.9.9.zip
+dnf install gcc-c++
+dnf  install -y pcre pcre-devel
+dnf install -y zlib zlib-devel
+
+/usr/local/nginx/sbin/nginx -s reload
+
+复制代码
+ cd /usr/local/nginx/sbin/
+ ./nginx 
+
+其它命令
+ ./nginx -s stop
+ ./nginx -s quit
+ ./nginx -s reload
+复制代码
+
+ /usr/bin/fdfs_upload_file  /etc/fdfs/client.conf  startZookeeperRedis.sh
+http://192.168.42.29:8080/group1/M00/00/00/wKgqHVtyuHKACIzjAAACcBmD4Ro7191.sh

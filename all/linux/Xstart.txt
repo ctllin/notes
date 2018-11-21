@@ -1,0 +1,4 @@
+/home/soft/WebStorm-173.4674.32/bin/webstorm.sh
+firefox
+/home/soft/idea-IU-173.4674.33/bin/idea.sh
+192.168.42.29

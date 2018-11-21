@@ -1,0 +1,55 @@
+http://nginx.org/download/  nginx下载地址
+
+解决Nginx的connect() to xxx.xx.xxx.xxx:2345 failed (13: Permission denied) while connecting to upstream一、关闭SeLinux
+
+查看SELinux状态：
+
+1、/usr/sbin/sestatus -v      ##如果SELinux status参数为enabled即为开启状态
+SELinux status:                 enabled
+2、getenforce                 ##也可以用这个命令检查
+关闭SELinux：
+1、临时关闭（不用重启机器）：
+setenforce 0                  ##设置SELinux 成为permissive模式
+##setenforce 1 设置SELinux 成为enforcing模式
+2、修改配置文件需要重启机器：
+修改/etc/selinux/config 文件
+将SELINUX=enforcing改为SELINUX=disabled
+重启机器即可
+
+nginx.1.12.1.conf.tar  是Redora27上面的配置文件
+
+nginx 域名配置（如果在虚拟机测试在服务器和访问机的hosts文件都需要配置上域名例如192.168.42.29 nginxreq）
+在/etc/nginx/conf.d 创建 nginxreq.conf文件
+vi nginxreq.conf内容如下
+server
+{
+         #nginx多域名配置
+	#修改/etc/hosts  增加192.168.42.29 nginxreq 因为不是实际域名 所以访问该地址的设备hosts文件需要配置192.168.42.29 nginxreq
+	#tomcat使用域名配置在server.xml 中<Host name="localhost"  appBase="webapps"  unpackWARs="true" autoDeploy="true">修改为 <Host name="nginxreq"  appBase="webapps"  unpackWARs="true" autoDeploy="true">
+	#在浏览器中输入http://nginxreq/即可访问（只能用域名访问）
+	server_name  nginxreq;
+	index index.html index.htm index.jsp;
+
+	location / {
+	    proxy_pass http://nginxreq:8080;#此处使用域名
+	    proxy_set_header   Host    $host; 
+	    proxy_set_header   X-Real-IP   $remote_addr; 
+	    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
+	}
+
+	location ~ \.(shtml|html|ico|rar|css|js|zip|txt|flv|swf|mid|doc|ppt|xls|pdf|txt|mp3|wma)$ {
+	    proxy_pass   http://nginxreq:8080;#此处使用域名
+	     proxy_set_header Host $host;
+#              proxy_cache cache_one;
+#              proxy_cache_valid 200 302 1h;
+#              proxy_cache_valid 301 1d;
+#              proxy_cache_valid any 1m;
+#              expires 30d;
+	}
+
+	#location ~ ^/(WEB-INF)/ {
+	#	deny all; 
+	#}
+
+	access_log  /var/log/nginx/nginxreq.log  main;
+}

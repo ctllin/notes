@@ -1,0 +1,1 @@
+mvn archetype:generate -DgroupId=com.ctl.common.util -DartifactId=commonUtils -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false

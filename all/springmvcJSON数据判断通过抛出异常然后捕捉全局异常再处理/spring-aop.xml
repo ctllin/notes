@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	
+	<bean id="loginValidateAspect" class="com.*.aspect.LoginValidateAspect" />
+	<aop:config>
+		<aop:aspect id="loginValidate" ref="loginValidateAspect" order="1">
+			<!-- 配置一个切点 -->
+			<aop:pointcut id="loginValidatePoint" expression="execution(* com.*.controller.*.*(..)) and  args(request,jsonObject)"  />
+			<!-- 配置前置通知 -->
+			<aop:before pointcut-ref="loginValidatePoint" method="before" arg-names="request,jsonObject"/>
+			<!-- 配置前置通知 -->
+			<aop:after pointcut-ref="loginValidatePoint" method="after" arg-names="request,jsonObject"/>
+			<!-- 配置后置返回通知 -->
+			<aop:after-returning pointcut-ref="loginValidatePoint" method="afterReturning" arg-names="request,response,jsonObject" returning="response" />
+			<!-- 异常通知 -->
+			<!--<aop:after-throwing pointcut-ref="sayHelloWorldPoint" method="afterThrowingHelloWorld" arg-names="language,e" throwing="e" />-->
+			<!-- 配置环绕通知 -->
+			<!--<aop:around pointcut-ref="loginValidatePoint" method="aroundRequest" />-->
+		</aop:aspect>
+	</aop:config>
+	<bean id="exceptionResolver" class="com.*.resolver.CustomExceptionResolver"></bean>
+</beans>

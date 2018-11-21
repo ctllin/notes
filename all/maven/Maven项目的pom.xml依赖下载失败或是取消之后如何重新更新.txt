@@ -1,0 +1,11 @@
+在eclipse中导入maven项目时，eclipse会下载pom.xml中定义的依赖，但是，有时候下载进度因为种种原因卡住，你会手贱把它停止。或者干脆下载失败了。
+
+这时候，问题来了，STS的Maven插件会将此认定了不可更新的依赖组件而再也不去更新它，即使你将它从pom中删除，然后再次加入也是徒劳的,总是提示：Failure to transfer com.google.guava:guava:jar:21.0 from https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+
+看提示似乎只有强制更新项目才行，对于不熟练eclipse中的maven插件的人来说有时候真能卡在这。
+
+右键项目，选择maven->update project… 
+在弹出来的窗口下面勾选Force Update of Snapshots/Releases 
+然后点击OK ，强制更新。
+
+这样maven才会再次尝试，如果还不成功，那就从其他途径找来jar，直接加入本地仓库吧。

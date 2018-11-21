@@ -1,0 +1,26 @@
+http://www.tcpdump.org/#latest-releases
+下载：tcpdump-4.9.2.tar.gz
+下载：libpcap-1.9.0.tar.gz
+# flex   
+yum -y install flex  
+# bison  
+yum -y install bison
+cd libpcap-1.9.0
+./configure
+ make && make install
+cd tcpdump-4.9.2
+./configure
+ make && make install
+https://www.wireshark.org/download/
+
+cpdump中最常见的几个参数
+-i 指定要抓取数据包的网卡名称
+tcpdump -i eth0 # 抓取eth0网卡的数据包
+-c 指定抓取包的个数
+tcpdump -i eth0 -c 10 # 只抓取10个包
+-w 把抓取到的数据存放到文件中供以后分析
+# tcpdump -i eth0 -c 10 -w my-packets.pcap
+# file my-packets.pcap
+my-packets.pcap: tcpdump capture file ....
+可以看到，我们保存的my-packets.pcap是一种特殊文件，直接使用vim是无法查看的，可以把
+该文件拿到windows下，使用wireshark查看
