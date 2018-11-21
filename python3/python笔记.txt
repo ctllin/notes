@@ -1,0 +1,6 @@
+redis python 类库下载地址：https://pypi.python.org/pypi/redis#downloads 
+redis-2.10.6.tar.gz 安装
+python3 setup.py install
+
+pdf插件安装
+https://pypi.python.org/pypi/pdfminer3k/

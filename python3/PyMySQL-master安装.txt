@@ -1,0 +1,9 @@
+https://pypi.python.org/pypi/PyMySQL#downloads下载地址
+PyMySQL-master.zip   下载地址：https://github.com/PyMySQL/PyMySQL/
+在Linux上解压该压缩包
+然后执行
+cd PyMySQL-master
+python3 setup.py install
+
+windows 安装进入解压后的文件打开cmd命令执行 python setup.py install
+我的解压目录为E:\Users\ctl\Downloads\PyMySQL-master 打开cmd命令，进入到E:\Users\ctl\Downloads\PyMySQL-master文件夹下面

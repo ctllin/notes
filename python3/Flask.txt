@@ -1,0 +1,4 @@
+下载地址：https://pypi.python.org/pypi/Flask/0.12.2
+
+python setup.py install
+需要联网

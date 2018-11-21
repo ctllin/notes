@@ -1,0 +1,36 @@
+Python踩坑之路
+Setup script exited with error: command 'gcc' failed with exit status 1
+由于没有正确安装Python开发环境导致。
+Centos/Fedora
+dnf install libevent-devel
+dnf install python3.6-devel(如果是2.*  则是python-devel)
+easy_install gevent
+或者
+pip install gevent
+把环境更新下
+sudo yum install groupinstall 'development tools'
+python3 -m pip install scrapy
+
+首先安装 sqlite-devel
+yum install sqlite-devel
+解压后执行
+install.sh
+然后将bin目录添加到环境变量
+执行下句子可以校验是否安装成功
+phthon3 --version
+
+./configure --prefix=/usr/local/python
+make && make install
+1、修改旧版本
+mv /usr/bin/python /usr/bin/python_bak
+2、创建新的软连接
+ln -s /usr/local/python/bin/python3.6 /usr/bin/python
+3、配置环境
+PATH=PATH:HOME/bin:/usr/local/python/bin
+
+Python-3.6.4.tgz下载地址
+https://www.python.org/downloads/release/python-364/ 
+点击Gzipped source tarball
+Files
+Version	Operating System	Description	MD5 Sum	File Size	GPG
+Gzipped source tarball	Source release		9de6494314ea199e3633211696735f65	2271

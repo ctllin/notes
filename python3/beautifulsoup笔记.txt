@@ -1,0 +1,10 @@
+https://www.crummy.com/software/BeautifulSoup/bs4/download/4.5/beautifulsoup4-4.5.3.tar.gz
+python  setup.py install
+
+https://pythonwheels.com/
+https://pypi.python.org/pypi/wheel
+
+
+
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+lxml-4.1.1-cp37-cp37m-win_amd64.whl

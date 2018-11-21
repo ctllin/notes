@@ -1,0 +1,2 @@
+下载地址： https://pypi.python.org/pypi/aiohttp/2.3.8#downloads
+安装 python setup.py install

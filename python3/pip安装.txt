@@ -1,0 +1,17 @@
+wget https://pypi.python.org/packages/source/p/pip/pip-1.5.4.tar.gz
+方法一、
+yum install anaconda
+tar -xvzf pip-1.5.4.tar.gz 
+python3.6 setup.py install
+方法二、
+如果方法一失败可以使用下面命令
+python3.6 -m pip install --upgrade pip --force-reinstall 
+使用pip时记得使用pip3.6因为可能有多个版本
+[root@bogon bin]# pip --version
+pip 9.0.1 from /opt/ActivePython-3.6/lib/python3.6/site-packages (python 3.6)
+检查版本发现pip版本为3.6
+那么可以直接使用pip
+
+Installing with get-pip.py
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.6 get-pip.py

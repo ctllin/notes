@@ -1,0 +1,8 @@
+http://www.sqlalchemy.org/download.html 下载地址
+linux安装
+cd SQLAlchemy-1.2.0
+ python3.6 setup.py install 
+windows安装
+python setup.py build 
+python setup.py install  
+D:\E盘\Document\python\SQLAlchemy-1.2.0>python ./setup.py install
