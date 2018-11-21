@@ -63,6 +63,10 @@ git pull --rebase origin master
 git push -u origin master
 *、状态查询命令
 git status
+7、强制将本地覆盖到git服务器上
+关联 git remote add origin https://github.com/ctllin/test.git
+本地覆盖git服务器（服务器上完全被本地覆盖）git push  -f origin master
+
 
 Git本地服务器搭建及使用详解
 Git本地服务器搭建及使用
