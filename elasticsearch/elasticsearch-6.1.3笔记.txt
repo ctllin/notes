@@ -1,0 +1,241 @@
+elasticsearch-6.1.3.tar.gz  需要在非root用户，且非root及其子目录下运行
+bin/elasticsearch
+学习网址 https://es.xiaoleilu.com/010_Intro/15_API.html
+https://www.elastic.co/guide/cn/elasticsearch/guide/current/_talking_to_elasticsearch.html
+提高了vm.max_map_count的大小   
+方式一、 
+sysctl -w vm.max_map_count=262144
+查看修改结果 
+      sysctl -a|grep vm.max_map_count
+方式二、
+vi /etc/sysctl.conf 
+添加下面配置：
+vm.max_map_count=655360
+并执行命令：
+sysctl -p
+
+iptables -I INPUT -p tcp --dport 9200 -j ACCEPT
+iptables -I INPUT -p tcp --dport 9300 -j ACCEPT
+
+3、启动后，如果只有本地可以访问，尝试修改配置文件 elasticsearch.yml
+中network.host(注意配置文件格式不是以 # 开头的要空一格， ： 后要空一格)
+为 network.host: 192.168.42.29
+默认端口是 9200
+注意：关闭防火墙 或者开放9200端口
+
+vi /etc/security/limits.conf  编辑该文件，后面加上（username为启动elasticsearch服务的用户）：
+username soft nofile 65536
+username hard nofile 65536
+
+vi elasticsearch.yml
+修改#network.host: 192.168.0.1  为 network.host: 192.168.42.29
+
+./elasticsearch -d  后台运行
+
+bin/elasticsearch-plugin install x-pack
+
+打开另一个终端进行测试：
+curl 'http://192.168.42.29:9200/?pretty'
+你能看到以下返回信息：
+{
+  "name" : "N-wNq5n",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "aew7SOL9RKOryAQMyvZqLg",
+  "version" : {
+    "number" : "6.1.3",
+    "build_hash" : "af51318",
+    "build_date" : "2018-01-26T18:22:55.523Z",
+    "build_snapshot" : false,
+    "lucene_version" : "7.1.0",
+    "minimum_wire_compatibility_version" : "5.6.0",
+    "minimum_index_compatibility_version" : "5.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+这说明你的ELasticsearch集群已经启动并且正常运行，接下来我们可以开始各种实验了。
+方式一（等同方式二）
+curl -XPOST -H "Content-Type: application/json" 'http://192.168.42.29:9200/_count?pretty' -d '{"query": {"match_all": {}}}'
+方式二
+curl -H "Content-Type: application/json" -X POST  --data  '{"query": {"match_all": {}}}' 'http://192.168.42.29:9200/_count?pretty' 
+
+验证是否启动成功
+http://192.168.42.29:9200/
+
+http://192.168.42.29:9200/_cat/health?v(浏览器)  GET 192.168.42.29:9200/_cat/health?v(linux系统中执行)
+ GET 192.168.42.29:9200/_cat/nodes?v
+List All Indices：GET 192.168.42.29:9200/_cat/indices?v
+
+Create an index ：
+curl -XPUT '192.168.42.29:9200/customer/_doc/1?pretty&pretty' -H 'Content-Type: application/json' -d'
+{
+  "name": "ctl 蔡腾林"
+}'
+#curl -XPUT '192.168.42.29:9200/customer?pretty&pretty'
+#curl -XGET '192.168.42.29:9200/_cat/indices?v&pretty'
+Index and Query a Document：
+curl -XGET '192.168.42.29:9200/customer/_doc/1?pretty&pretty'
+
+ Delete an Index：
+curl -XDELETE '192.168.42.29:9200/customer?pretty&pretty'
+curl -XGET '192.168.42.29:9200/_cat/indices?v&pretty'
+
+Updating Documents：
+curl -XPOST '192.168.42.29:9200/customer/_doc/1/_update?pretty&pretty' -H 'Content-Type: application/json' -d'
+{
+  "doc": { "name": "Jane Doe", "age": 27 }
+}
+'
+
+ Deleting Documents：
+curl -XDELETE '192.168.42.29:9200/customer/_doc/2?pretty&pretty'
+curl -XPOST '192.168.42.29:9200/twitter/_delete_by_query?pretty' -H 'Content-Type: application/json' -d'
+{
+  "query": { 
+    "match": {
+      "message": "some message"
+    }
+  }
+}
+'
+创建索引在ElasticSearch索引中，对应于CRUD中的“创建”和“更新” - 如果对具有给定类型的文档进行索引，并且要插入原先不存在的ID。 如果具有相同类型和ID的文档已存在，则会被覆盖。要索引第一个JSON对象，我们对REST API创建一个PUT请求到一个由索引名称，类型名称和ID组成的URL。 也就是：http://localhost:9200/<index>/<type>/[<id>]。索引和类型是必需的，而id部分是可选的。如果不指定ID，ElasticSearch会为我们生成一个ID。 但是，如果不指定id，应该使用HTTP的POST而不是PUT请求。
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/1" -d'
+{
+    "title": "The Godfather",
+    "director": "Francis Ford Coppola",
+    "year": 1972,
+    "uuid":1,
+    "type":"movie",
+    "genres": ["Crime", "Drama"]
+}'
+
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/2" -d'
+{
+    "title": "Lawrence of Arabia",
+    "director": "David Lean",
+    "year": 1962,
+    "uuid":2,
+    "type":"movie",
+    "genres": ["Adventure", "Biography", "Drama"]
+}'
+
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/3" -d'
+{
+    "title": "To Kill a Mockingbird",
+    "director": "Robert Mulligan",
+    "year": 1962,
+    "uuid":3,
+    "type":"movie",
+    "genres": ["Crime", "Drama", "Mystery"]
+}'
+
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/4" -d'
+{
+    "title": "Apocalypse Now",
+    "director": "Francis Ford Coppola",
+    "year": 1979,
+    "uuid":4,
+    "type":"movie",
+    "genres": ["Drama", "War"]
+}'
+
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/5" -d'
+{
+    "title": "Kill Bill: Vol. 1",
+    "director": "Quentin Tarantino",
+    "year": 2003,
+    "uuid":5,
+    "type":"movie",
+    "genres": ["Action", "Crime", "Thriller"]
+}'
+
+curl -H 'Content-Type:application/json' -X POST  "http://192.168.3.240:9200/movies/movie/6" -d'
+{
+    "title": "The Assassination of Jesse James by the Coward Robert Ford",
+    "director": "Andrew Dominik",
+    "year": 2007,
+    "uuid":6,
+    "type":"movie",
+    "genres": ["Biography", "Crime", "Drama"]
+}'
+
+更新索引现在，在索引中有了一部电影信息，接下来来了解如何更新它，添加一个类型列表。要做到这一点，只需使用相同的ID索引它。使用与之前完全相同的索引请求，但类型扩展了JSON对象。
+
+由ID获取文档/索引
+curl -XGET "http://192.168.3.240:9200/movies/movie/1" -d ''
+curl -XGET "http://192.168.3.240:9200/movies/movie/2" -d ''
+
+_search端点现在已经把一些电影信息放入了索引，可以通过搜索看看是否可找到它们。 为了使用ElasticSearch进行搜索，我们使用_search端点，可选择使用索引和类型。也就是说，按照以下模式向URL发出请求：<index>/<type>/_search。其中，index和type都是可选的。换句话说，为了搜索电影，可以对以下任一URL进行POST请求：http://localhost:9200/_search - 搜索所有索引和所有类型。http://localhost:9200/movies/_search - 在电影索引中搜索所有类型http://localhost:9200/movies/movie/_search - 在电影索引中显式搜索电影类型的文档。
+
+指定搜索的字段
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/_search" -d'
+{
+    "query": {
+        "query_string": {
+            "query": "ford",
+            "fields": ["title"]
+        }
+    }
+}'
+过滤
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/_search" -d'
+{
+    "query": {
+        "bool": {
+            "filter": {
+                "terms": {
+                    "year": [
+                        1962
+                    ]
+                }
+            },
+            "must": {
+                "multi_match": {
+                    "fields": [
+                        "title"
+                    ],
+                    "query": "kill"
+                }
+            }
+        }
+    }
+}'
+
+
+多索引API中的大多数操作(主要是搜索和其他操作)用于一个或多个索引。 这有助于用户通过只执行一次查询来搜索多个位置或所有可用数据。 许多不同的符号用于在多个索引中执行操作。 我们将在本节讨论其中的一些。逗号分隔符号POST http://localhost:9200/index1,index2,index3/_search
+
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/movies/_search" -d ''
+
+所有索引的_all关键字
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/_all/_search" -d ''
+
+通配符(*，+， - )
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/m*/_search" -d '
+ {
+   "query":{
+      "query_string":{
+         "query":"kill"
+      }
+   }
+}'
+
+版本控制
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/movies/movie/1?version=7" -d '{
+    "title": "The Godfather",
+    "director": "Francis Ford Coppola",
+    "year": 1972,
+    "uuid":1,
+    "genres": ["Crime", "Drama"]
+}'
+
+多获取API它具有相同的功能，如GET API，但此get请求可以返回多个文档。使用doc数组来指定需要提取的所有文档的索引，类型和ID。
+curl -H 'Content-Type:application/json' -X POST "http://192.168.3.240:9200/_mget" -d '{
+   "docs":[
+      {
+         "_index": "movies", "_type": "movie", "_id": "1"
+      },
+
+      {
+         "_index":"musics", "_type":"music", "_id": "2"
+      }
+   ]
+}'

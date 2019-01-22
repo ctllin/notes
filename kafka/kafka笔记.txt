@@ -7,9 +7,11 @@ export PATH=$PATH:$JAVA_HOME/bin
 启动ZooKeeper
 
 打开一个新终端并键入以下命令 -
-bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/zookeeper-server-start.sh config/zookeeper.properties 
+bin/zookeeper-server-start.sh config/zookeeper.properties  1>/dev/null 2>&1 &
 要启动Kafka Broker，请键入以下命令 -
 bin/kafka-server-start.sh config/server.properties
+bin/kafka-server-start.sh config/server.properties   1>/dev/null 2>&1 &
 启动Kafka Broker后，在ZooKeeper终端上键入命令 jps ，您将看到以下响应 -
 821 QuorumPeerMain
 928 Kafka

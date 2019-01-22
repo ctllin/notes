@@ -1,3 +1,24 @@
+[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+解决： 切换到root用户
+ 执行命令： sysctl -w vm.max_map_count=262144
+查看结果： sysctl -a|grep vm.max_map_count
+ 显示： vm.max_map_count = 262144
+
+linux 查看war内容 例如test.war
+vi.war 
+使用/搜索，如：/config.properties
+使用enter查看文件内容
+使用:q返回上一级
+
+Linux查看文件句柄
+确认系统设置的最大文件句柄数 
+ulimit -a
+统计系统中当前打开的总文件句柄数 
+lsof|awk ‘{print $2}’ |wc -l
+根据打开文件句柄的数量降序排列，其中第二列为进程ID： 
+lsof|awk ‘{print $2}’|sort|uniq -c|sort -nr|more
+lsof -n|awk '{print $2}'|sort|uniq -c|sort -nr|head -10
+
 tailf catalina.out|grep -E 'INFO|ERROR'  查看包含INFO或ERROR的日志内容
 tailf catalina.out|grep -v 'DEBUG\|WARN' 查看不包含DEBUG和WARN的日志内容
 grep 同时满足多个关键字
