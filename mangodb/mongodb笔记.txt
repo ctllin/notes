@@ -9,6 +9,9 @@ curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.3.tgz
 mkdir c:\data\db
 mkdir c:\data\log
 
+MongoDB连接命令格式
+mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+
 创建配置文件
 创建一个配置文件。该文件必须设置 systemLog.path 参数，包括一些附加的配置选项更好。
 例如，创建一个配置文件位于 C:\mongodb\mongod.cfg，其中指定 systemLog.path 和 storage.dbPath。具体配置内容如
@@ -19,10 +22,10 @@ storage:
     dbPath: /home/soft/mongodb-linux-x86_64-3.6.3/db
 
 linux启动
- mongod --dbpath=/home/soft/mongodb-linux-x86_64-3.6.3/db 
+ mongod --dbpath=/home/soft/mongodb-linux-x86_64-3.6.3/db --port 27017 --bind_ip 192.168.42.29  --quiet
 MongoDB后台管理 Shell
 $ cd /usr/local/mongodb/bin
-$ ./mongo
+$ ./mongo 192.168.42.29:27017
 
 show dbs/use dbname/show talbes
 db.test2.insert({"site":"www.runoob.com","name":"菜鸟教程","num":5})
@@ -53,3 +56,166 @@ mongo 192.168.42.29/test -uctl -pliebe
     tags: ['mongodb', 'database', 'NoSQL'],
     likes: 100
 })
+
+MongoDB 创建数据库
+语法
+MongoDB 创建数据库的语法格式如下：
+use DATABASE_NAME
+如果数据库不存在，则创建数据库，否则切换到指定数据库。
+
+db.dropDatabase() 删除数据库
+
+MongoDB 的 db.createCollection(name，options) 方法用于在MongoDB 中创建集合(db.items.insert({"name":"yiibai tutorials"}),自动创建collection‘items’)
+db.createCollection("person", {capped : true, autoIndexId : true, size : 6142800, max : 10000 })
+
+drop()方法MongoDB 的 db.collection.drop() 用于从数据库中删除集合。
+
+insert()命令的基本语法如下：>db.COLLECTION_NAME.insert(document)
+示例>db.mycol.insert({
+   _id: 100,
+   title: 'MongoDB Overview', 
+   description: 'MongoDB is no sql database',
+   by: 'yiibai tutorials',
+   url: 'http://www.yiibai.com',
+   tags: ['mongodb', 'database', 'NoSQL'],
+   likes: 100,
+})
+Shell这里mycol是集合的名称，在前一章中所创建的。如果数据库中不存在集合，则MongoDB将创建此集合，然后将文档插入到该集合中。在插入的文档中，如果不指定_id参数，那么 MongoDB 会为此文档分配一个唯一的ObjectId。_id为集合中的每个文档唯一的12个字节的十六进制数。 12字节划分如下 -_id: ObjectId(4 bytes timestamp, 3 bytes machine id, 2 bytes process id, 
+   3 bytes incrementer)
+Shell要在单个查询中插入多个文档，可以在insert()命令中传递文档数组。如下所示 - > db.mycol.insert([
+   {
+      _id: 101,
+      title: 'MongoDB Guide', 
+      description: 'MongoDB is no sql database',
+      by: 'yiibai tutorials',
+      url: 'http://www.yiibai.com',
+      tags: ['mongodb', 'database', 'NoSQL'],
+      likes: 100
+   },
+
+   {
+      _id: 102,
+      title: 'NoSQL Database', 
+      description: "NoSQL database doesn't have tables",
+      by: 'yiibai tutorials',
+      url: 'http://www.yiibai.com',
+      tags: ['mongodb', 'database', 'NoSQL'],
+      likes: 210, 
+      comments: [
+         {
+            user:'user1',
+            message: 'My first comment',
+            dateCreated: new Date(2017,11,10,2,35),
+            like: 0 
+         }
+      ]
+   },
+   {
+      _id: 104,
+      title: 'Python Quick Guide', 
+      description: "Python Quick start ",
+      by: 'yiibai tutorials',
+      url: 'http://www.yiibai.com',
+      tags: ['Python', 'database', 'NoSQL'],
+      likes: 30, 
+      comments: [
+         {
+            user:'user1',
+            message: 'My first comment',
+            dateCreated: new Date(2018,11,10,2,35),
+            like: 590 
+         }
+      ]
+   }
+])
+
+其它插入文档的方法db.collection.insertOne()方法db.collection.insertOne()方法将单个文档插入到集合中。以下示例将新文档插入到库存集合中。 如果文档没有指定_id字段，MongoDB会自动将_id字段与ObjectId值添加到新文档。db.inventory.insertOne(
+   { item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } }
+)
+Shelldb.collection.insertOne()方法返回包含新插入的文档的`_id```字段值的文档。
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("5c4838481f4f6fc1f8030632")
+}
+
+db.collection.insertMany()方法db.collection.insertMany()方法将多个文档插入到集合中，可将一系列文档传递给db.collection.insertMany()方法。以下示例将三个新文档插入到库存集合中。如果文档没有指定_id字段，MongoDB会向每个文档添加一个ObjectId值的_id字段。db.inventory.insertMany([
+   { item: "journal", qty: 25, tags: ["blank", "red"], size: { h: 14, w: 21, uom: "cm" } },
+   { item: "mat", qty: 85, tags: ["gray"], size: { h: 27.9, w: 35.5, uom: "cm" } },
+   { item: "mousepad", qty: 25, tags: ["gel", "blue"], size: { h: 19, w: 22.85, uom: "cm" } }
+])
+insertMany()返回包含新插入的文档_id字段值的文档。执行结果如下 -
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("5c4838941f4f6fc1f8030633"),
+                ObjectId("5c4838941f4f6fc1f8030634"),
+                ObjectId("5c4838941f4f6fc1f8030635")
+        ]
+}
+
+
+find()命令的基本语法如下：>db.COLLECTION_NAME.find(document)
+Shellfind()方法将以非结构化的方式显示所有文档。
+除了find()方法外，还有一个findOne()方法，它只返回一个文档。
+
+MongoDB 与 RDBMS的等效 Where 子句要在一些条件的基础上查询文档，可以使用以下操作。
+操作	语法	示例	RDBMS等效语句
+相等	{<key>:<value>}	db.mycol.find({"by":"yiibai"}).pretty()	where by = 'yiibai'
+小于	{<key>:{$lt:<value>}}	db.mycol.find({"likes":{$lt:50}}).pretty()	where likes < 50
+小于等于	{<key>:{$lte:<value>}}	db.mycol.find({"likes":{$lte:50}}).pretty()	where likes <= 50
+大于	{<key>:{$gt:<value>}}	db.mycol.find({"likes":{$gt:50}}).pretty()	where likes > 50
+大于等于	{<key>:{$gte:<value>}}	db.mycol.find({"likes":{$gte:50}}).pretty()	where likes >= 50
+不等于	{<key>:{$ne:<value>}}	db.mycol.find({"likes":{$ne:50}}).pretty()	where likes != 50
+
+
+MongoDB中的AND操作符语法在find()方法中，如果通过使用’，‘将它们分开传递多个键，则 MongoDB 将其视为AND条件。 以下是AND的基本语法 ->db.mycol.find(
+   {
+      $and: [
+         {key1: value1}, {key2:value2}
+      ]
+   }
+).pretty()
+Shell示例以下示例将显示由“yiibai tutorials”编写并且标题为“MongoDB Overview”的所有教程。> db.mycol.find({$and:[{"by":"yiibai tutorials"},{"title": "MongoDB Overview"}]}).pretty()
+{
+        "_id" : 100,
+        "title" : "MongoDB Overview",
+        "description" : "MongoDB is no sql database",
+        "by" : "yiibai tutorials",
+        "url" : "http://www.yiibai.com",
+        "tags" : [
+                "mongodb",
+                "database",
+                "NoSQL"
+        ],
+        "likes" : 100
+}
+对于上面给出的例子，等效的SQL where子句是 - SELECT * FROM mycol where by ='yiibai tutorials' AND title ='MongoDB Overview'
+SQL可以在find子句中传递任意数量的键值。
+
+MongoDB中的OR操作符语法在要根据OR条件查询文档，需要使用$or关键字。 以下是OR条件的基本语法 ->db.mycol.find(
+   {
+      $or: [
+         {key1: value1}, {key2:value2}
+      ]
+   }
+).pretty()
+
+使用 AND 和 OR 条件一起示例以下示例将显示likes大于10以及标题是“MongoDB Overview”或者“yiibai tutorials”的所有文档。 等价SQL where子句为 - SELECT * FROM mycol where likes> 10 AND(by ='yiibai tutorials' OR title ='MongoDB Overview')
+SQL>db.mycol.find({"likes": {$gt:10}, $or: [{"by": "yiibai tutorials"},
+   {"title": "MongoDB Overview"}]}).pretty()
+{
+   "_id": 100,
+   "title": "MongoDB Overview", 
+   "description": "MongoDB is no sql database",
+   "by": "yiibai tutorials",
+   "url": "http://www.yiibai.com",
+   "tags": ["mongodb", "database", "NoSQL"],
+   "likes": "100"
+}
+ 
+
+
+
+
+
+

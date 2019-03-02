@@ -1,0 +1,23 @@
+#!/bin/bash
+#获取会员登录信息存储到文件，然后遍历该文件再批量删除
+redis-cli ?-c -h 127.0.0.1?-p 6379 -a ?'123456' keys "member-securityKey-1*" > member-securityKey.txt
+for line in `cat member-securityKey.txt`
+do
+? ? redis-cli ?-c -h 27.0.0.1?-p 6379 ?-a '123456' del $line
+done
+
+方式二；
+redis-cli -c -h 127.0.0.1 -p 6379 -a ?'123456' keys "member-securityKey-1*" > member-securityKey.txt
+
+#!/bin/bash
+#声明变量
+str=''
+for line in `cat member-securityKey.txt`
+do
+#拼接所有的key
+str="$line $str"
+done
+#输入所有的key
+echo $str
+删除所有的key
+redis-cli -c -h 172.21.0.11 -p 6379 ?-a '123456' del $str

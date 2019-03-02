@@ -1,3 +1,11 @@
+rm `ls *|egrep -v error.log`   删除 排除
+split -b 100m 1111.log (按照字节分隔)
+split -l 1000000 1111.log(按照行数分隔)
+
+ who | cut -d' ' -f1 | sort | uniq  当前登陆的用户名
+补充：users命令，可用于打印输出登录服务器的用户名称。该命令除了有help和version选项外，再没有其他选项。如果某用户使用了多个终端，则相应的会显示多个重复的用户名。
+whoami whoami命令的执行效果和id -un的效果完全一样，例如：
+
 [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
 解决： 切换到root用户
  执行命令： sysctl -w vm.max_map_count=262144
