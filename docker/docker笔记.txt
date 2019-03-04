@@ -1,0 +1,31 @@
+docker run -i -t java-app /bin/bash (java-app) 进入容器（微型Linux系统）
+
+docker容器中是不带vim命令的，需要自己重新安装下，具体如下：
+     1）进入容器后用命令apt-get update下源库
+     2）然后执行apt-get install vim命令
+
+ docker run -p 80:80 -d nginx 
+[root@localhost ~]# docker ps 
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+fe65d3da03ed        nginx               "nginx -g 'daemon ..."   50 seconds ago      Up 49 seconds       0.0.0.0:80->80/tcp   jovial_volhard
+[root@localhost ~]# docker stop fe65d3da03ed (停止运行nignx)
+
+使用 nginx 镜像
+运行容器
+runoob@runoob:~/nginx$ docker run -p 80:80 --name mynginx -v $PWD/www:/www -v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf -v $PWD/logs:/wwwlogs  -d nginx  
+45c89fab0bf9ad643bc7ab571f3ccd65379b844498f54a7c8a4e7ca1dc3a2c1e
+runoob@runoob:~/nginx$
+命令说明：
+-p 80:80：将容器的80端口映射到主机的80端口
+--name mynginx：将容器命名为mynginx
+-v $PWD/www:/www：将主机中当前目录下的www挂载到容器的/www
+-v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf：将主机中当前目录下的nginx.conf挂载到容器的/etc/nginx/nginx.conf
+-v $PWD/logs:/wwwlogs：将主机中当前目录下的logs挂载到容器的/wwwlogs
+
+
+docker commit -m '注释' 容器CONTAINER ID 镜像名称:镜像版本
+编辑容器后不关闭容器直接保存容器(关闭后再容器里面变更的东西会恢复为最初状态)
+[root@localhost ~]# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS              PORTS               NAMES
+edd8bcef3277        8c9ca4d17702        "/bin/bash"         About a minute ago   Up About a minute   80/tcp              condescending_carson
+[root@localhost ~]# docker commit edd8bcef3277 mydockernginx:v0.1 

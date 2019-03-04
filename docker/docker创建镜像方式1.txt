@@ -1,0 +1,61 @@
+docker pull nginx   #下载镜像
+docker run -i -t docker.io/nginx  /bin/bash #进入容器
+apt-get update #更新
+apt-get install vim  #安装vim
+cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.back #备份nginx配置文件
+
+#增加快捷命令
+cd ~ 
+cp .bashrc .bashrc.back 
+alias ll='ls -al'
+alias vi='vim'
+
+#查看containerid （1ad0773e4356保存时会用到）
+[root@localhost nginxtest]# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+1ad0773e4356        docker.io/nginx     "/bin/bash"         3 minutes ago       Up 3 minutes       
+ 80/tcp              musing_stonebraker
+
+#退出并保存
+exit
+docker commit -m 'docker-nginx:v1.1' -a 'ctl' 1ad0773e4356 ctl/nginx:v1.1
+[root@localhost javaapp]# docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
+ctl/nginx                           v1.1                05c1a5f4b7bc        4 seconds ago       157 MB
+
+#利用刚编辑过后的容器创建新的镜像
+vi Dockerfile #添加下面三行
+FROM    ctl/nginx:v1.1
+RUN     /bin/echo 'nginx'
+CMD ["nginx", "-g", "daemon off;"]
+
+#创建镜像
+ docker build -t nginx-v1.2  .
+
+#查看创建的镜像并使用
+[root@localhost nginxtest]# docker images
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+nginx-v1.1                          latest              8493f79a3bff        4 seconds ago       157 MB
+docker run -p 80:80 -d nginx-v1.2  #运行
+docker run -i -t  nginx-v1.2 /bin/bash #进入后安装的vim还有拷贝的配置文件都生效了
+
+导出
+docker save -o docker-nginx.tar nginx-v1.2
+ 删除
+docker rmi -f nginx-v1.2
+导入
+docker load -i  docker-nginx.tar
+
+docker export -o nginx-test.tar nginx-test 
+其中-o表示输出到文件，nginx-test.tar为目标文件，nginx-test是源容器名（name）
+docker import nginx-test.tar nginx:imp 
+export命令导出的tar文件略小于save命令导出的 
+
+export命令是从容器（container）中导出tar文件，而save命令则是从镜像（images）中导出
+基于第二点，export导出的文件再import回去时，无法保留镜像所有历史（即每一层layer信息，不熟悉的可以去看Dockerfile），不能进行回滚操作；而save是依据镜像来的，所以导入时可以完整保留下每一层layer信息。如下图所示，nginx:latest是save导出load导入的，nginx:imp是export导出import导入的。 
+
+建议 可以依据具体使用场景来选择命令
+若是只想备份images，使用save、load即可
+若是在启动容器后，容器内容有变化，需要备份，则使用export、import
+ 
+
