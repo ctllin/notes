@@ -94,7 +94,7 @@ docker ps -a | grep '^a' | grep 'n$'| awk 'BEGIN {FS="        "} {print $1}'   #
 	[root@localhost javaapp]# docker ps -a | grep '^a' | grep 'n$'| awk 'BEGIN {FS="        "} {print $2}'   
 	nginx-v1.2
 	12503b08fed3
-
+	docker ps -a | grep '^'| awk 'BEGIN {FS=" "} {print $2}'  | sed -n '2,100p' #获取第1到第99个容器id
 Linux打开当前路径图形化窗口
 nautilus
 # 当前路径
