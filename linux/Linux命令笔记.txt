@@ -83,7 +83,17 @@ grep正则表达式元字符
 　　'{m,n}'：匹配其前面的字符至少m次，至多n次
 　　()：将一个或多个字符捆绑在一起，当做一个整体进行处理，反向引用照常使用。
 　　'|'：或（注：'C|cat'为C与cat，'（C|c）at才是Cat与cat'）
-
+docker ps -a | grep '^a' | grep 'n$'| awk 'BEGIN {FS="        "} {print $1}'   #a开头 结尾 以"        "分割 只要第一列($1)
+例如
+	[root@localhost javaapp]# docker ps -a | grep '^a' | grep 'n$'
+	a367c9aaabb9        nginx-v1.2          "nginx -g 'daemon ..."   2 hours ago         Exited (0) 2 hours ago                                priceless_ramanujan
+	af594b71d600        12503b08fed3        "/bin/bash"              5 hours ago         Exited (0) 5 hours ago                                loving_newton
+	[root@localhost javaapp]# docker ps -a | grep '^a' | grep 'n$'| awk 'BEGIN {FS="        "} {print $1}'  
+	a367c9aaabb9
+	af594b71d600
+	[root@localhost javaapp]# docker ps -a | grep '^a' | grep 'n$'| awk 'BEGIN {FS="        "} {print $2}'   
+	nginx-v1.2
+	12503b08fed3
 
 Linux打开当前路径图形化窗口
 nautilus
