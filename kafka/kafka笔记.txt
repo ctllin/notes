@@ -29,3 +29,6 @@ bin/kafka-server-start.sh config/server.properties
 928 Kafka
 931 Jps
 现在你可以看到两个守护进程运行在终端上，QuorumPeerMain是ZooKeeper守护进程，另一个是Kafka守护进程。
+
+创建主题：bin/kafka-topics.sh --zookeeper 192.168.42.29:2181 --create --topic spring_cloud_topic --partitions 30  --replication-factor 
+查看主题：bin/kafka-topics.sh --zookeeper 192.168.42.29:2181 --list 
