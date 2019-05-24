@@ -1,3 +1,8 @@
+#搜索config.properties中包含Shanghai的文件将&serverTimezone=Asia/Shanghai替换为空
+sed -i 's#&serverTimezone=Asia/Shanghai##g' `grep "Shanghai" -rl *|grep "classes/config.properties"` 
+#找到路径匹配classes/config.properties且包含redis的配置文件
+grep "redis" -rl *|grep "classes/config.properties"  
+
 rm `ls *|egrep -v error.log`   删除 排除
 split -b 100m 1111.log (按照字节分隔)
 split -l 1000000 1111.log(按照行数分隔)
@@ -13,7 +18,7 @@ whoami whoami命令的执行效果和id -un的效果完全一样，例如：
  显示： vm.max_map_count = 262144
 
 linux 查看war内容 例如test.war
-vi.war 
+vim test.war 
 使用/搜索，如：/config.properties
 使用enter查看文件内容
 使用:q返回上一级
@@ -370,6 +375,7 @@ sort b.txt a.txt a.txt | uniq -u
 
 find 2017-10-1*  -type f -name '*.txt'|xargs grep -n --color=auto '9F9DE8C7C1B20171004123944'
 find /mnt/datadir/ftpclient/2017-10-1*  -name '*portal*'
+ find . -type f -name '*.properties' |grep "classes/config.properties" |xargs  grep -n --color=auto   '2181'        
 
 cat access.log |grep '18/Jul/2017' > /home/tomcat/18.log
 根据条件导出日志到另一个文件
@@ -706,6 +712,16 @@ tac filename #查看文件内容但是从文件最后一行和cat相反
 tail filename #默认显示最后10行 tail -n 20 filename 显示最后20行  tail -n +6 filename 从第6行开始显示
 nl filename   #查看文件显示行号
 vi filename编辑
+二、插入文本或行(vi命令模式下使用，执行下面命令后将进入插入模式，按ESC键可退出插入模式) 
+
+a      //在当前光标位置的右边添加文本 
+i       //在当前光标位置的左边添加文本 
+A     //在当前行的末尾位置添加文本 
+I      //在当前行的开始处添加文本(非空字符的行首) 
+O     //在当前行的上面新建一行 
+o     //在当前行的下面新建一行 
+R    //替换(覆盖)当前光标位置及后面的若干文本 
+J    //合并光标所在行及下一行为一行(依然在命令模式) 
 进入vi后 i 开始编辑  退出先esc在： 在wq(保存)q!（不保存）
 :w 保存文件但不退出vi 
 :w file 将修改另外保存到file中，不退出vi 
