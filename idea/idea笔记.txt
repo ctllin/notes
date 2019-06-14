@@ -3,3 +3,4 @@ IDEA 快速创建项目Spring boot项目缺找不到spring Initializr
 mybatis xml validator
 mybatis-helper
 View->Toolbar 勾上
+在 plugins 搜 Batch Scripts Support 安装后可以在idea中执行bat
