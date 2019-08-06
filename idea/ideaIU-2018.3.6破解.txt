@@ -1,0 +1,40 @@
+参考地址:https://blog.csdn.net/jessDL/article/details/87071165
+方式一
+（1）下载破解补丁 
+把下载的破解补丁放在你的idea的安装目录下的bin的目录下面（如下图所示），本文示例为D:\Program Files\JetBrains\PyCharm 2017.3.5
+破解补丁下载：JetbrainsIdesCrack-4.2-release.jar
+  （2）修改配置文件 
+打开并编辑 idea.exe.vmoptions和idea64.exe.vmoptions这两个文件（使用记事本、ultraedit或notepad++等编辑器打开），在上述两个文件的最后一行均加上下面这段代码 
+-javaagent:F:\tools\ideaIU-2018.3.6.win\bin\JetbrainsIdesCrack-4.2-release.jar（注意：不要忘记修改成你自己idea的安装目录和对应的jar的版本）
+（3）输入激活码 
+启动idea，选择Activation Code，并输入如下激活码： 
+{
+"licenseId":"CtlLicenseId",
+"licenseeName":"ctl",
+"assigneeName":"ctl",
+"assigneeEmail":"ctl@163.com",
+"licenseRestriction":"Thanks Rover12421 Crack",
+"checkConcurrentUse":false,
+"products":[
+{"code":"II","paidUpTo":"2099-12-31"},
+{"code":"DM","paidUpTo":"2099-12-31"},
+{"code":"AC","paidUpTo":"2099-12-31"},
+{"code":"RS0","paidUpTo":"2099-12-31"},
+{"code":"WS","paidUpTo":"2099-12-31"},
+{"code":"DPN","paidUpTo":"2099-12-31"},
+{"code":"RC","paidUpTo":"2099-12-31"},
+{"code":"PS","paidUpTo":"2099-12-31"},
+{"code":"DC","paidUpTo":"2099-12-31"},
+{"code":"RM","paidUpTo":"2099-12-31"},
+{"code":"CL","paidUpTo":"2099-12-31"},
+{"code":"PC","paidUpTo":"2099-12-31"},
+{"code":"DB","paidUpTo":"2099-12-31"},
+{"code":"GO","paidUpTo":"2099-12-31"},
+{"code":"RD","paidUpTo":"2099-12-31"}
+],
+"hash":"2911276/0",
+"gracePeriodDays":7,
+"autoProlongated":false
+}
+
+ 

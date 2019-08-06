@@ -1,3 +1,5 @@
+https://www.jetbrains.com/idea/download/other.html
+
 IDEA 快速创建项目Spring boot项目缺找不到spring Initializr 
 解决 办法就是去plugins里边搜Spring Assistant，安装完后重启idea即可解决
 mybatis xml validator
