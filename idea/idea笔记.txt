@@ -11,3 +11,4 @@ idea自动创建测试类   https://blog.csdn.net/monica1_1/article/details/82957991
 
 idea 安装zookeeper插件
 http://plugins.jetbrains.com/plugin/7364-zookeeper
+plugins->Other Settings->ZooKeeper
