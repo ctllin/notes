@@ -8,3 +8,6 @@ View->Toolbar 勾上
 idea自动创建测试类   https://blog.csdn.net/monica1_1/article/details/82957991
 第一种：通过IDEA网络自动下载
 在左上角点击File,选择settings，在列表中选择Plugins，在搜索框，搜索JunitGenerator V2.0,，如果未安装会有install绿色按钮。点击下载。
+
+idea 安装zookeeper插件
+http://plugins.jetbrains.com/plugin/7364-zookeeper
