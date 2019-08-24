@@ -1,3 +1,6 @@
+搜索路径以 classes/config.properties 结束且包含mysql的文件，并显示包含mysql的行
+grep "mysql" -rl *|grep "classes/config.properties" |xargs grep -n --color=auto 'mysql'  
+
 #搜索config.properties中包含Shanghai的文件将&serverTimezone=Asia/Shanghai替换为空
 sed -i 's#&serverTimezone=Asia/Shanghai##g' `grep "Shanghai" -rl *|grep "classes/config.properties"` 
 #找到路径匹配classes/config.properties且包含redis的配置文件
