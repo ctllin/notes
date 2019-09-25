@@ -1,0 +1,13 @@
+ps -ef|grep mong
+
+#创建集群  _id:"hstr" 需要与配置文件 master.conf slave.conf arbiter.conf 中的replSetb 保持一致
+ ./bin/mongo 192.168.6.88:27018
+use admin
+ cfg={_id:"hstr",members:[{_id:0,host:"192.168.6.88:27018",priority:2},{_id:1,host:"192.168.6.88:27019",priority:1},{_id:2,host:"192.168.6.88:27020",arbiterOnly:true}]};
+ rs.initiate(cfg)
+查看集群状态
+rs.status()
+mongodb 建立 用户名和密码认证 集群(因是集群，必须在Primary上来新建(子群节点上也会有该用户))
+use wise_base_sensor
+db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_sensor"}]})
+db.auth("wise","123456");
