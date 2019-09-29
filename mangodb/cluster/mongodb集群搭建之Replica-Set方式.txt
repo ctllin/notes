@@ -1,0 +1,86 @@
+mongodb集群搭建之Replica-Set方式
+假设有三台设备 
+a:192.168.61.21 主
+b:192.168.61.22 从
+c:192.168.61.23
+mongodb版本mongodb-linux-x86_64-3.6.3
+创建文件夹/data/mongodb/master,/data/mongodb/slave,/data/mongodb/arbiter,然后依次启动每个节点
+配置文件 master.conf
+	dbpath=/data/mongodb/master
+	logpath=/data/mongodb/master.log
+	pidfilepath=/data/mongodb/master.pid
+	directoryperdb=true
+	logappend=true
+	replSet=hstr
+	bind_ip=192.168.61.21
+	port=27017
+	oplogSize=10000
+	fork=true
+	noprealloc=true
+
+配置文件 slave.conf
+	dbpath=/data/mongodb/slave
+	logpath=/data/mongodb/slave.log
+	pidfilepath=/data/mongodb/slave.pid
+	directoryperdb=true
+	logappend=true
+	replSet=hstr
+	bind_ip=192.168.61.22
+	port=27017
+	oplogSize=10000
+	fork=true
+	noprealloc=true
+
+配置文件 arbiter.conf
+	dbpath=/data/mongodb/arbiter
+	logpath=/data/mongodb/arbiter.log
+	pidfilepath=/data/mongodb/arbiter.pid
+	directoryperdb=true
+	logappend=true
+	replSet=hstr
+	bind_ip=192.168.61.23
+	port=27017
+	oplogSize=10000
+	fork=true
+	noprealloc=true
+
+启动节点
+	mongod -f master.conf
+	mongod -f slave.conf
+	mongod -f arbiter.conf
+
+创建集群
+	#创建集群  _id:"hstr" 需要与配置文件 master.conf slave.conf arbiter.conf 中的replSetb 保持一致
+	 ./bin/mongo 192.168.6.88:27017
+	 use admin
+	cfg={_id:"hstr",members:[{_id:0,host:"192.168.6.88:27018",priority:2},{_id:1,host:"192.168.6.88:27019",priority:1},{_id:2,host:"192.168.6.88:27020",arbiterOnly:true}]};
+	rs.initiate(cfg)
+查看集群状态
+	rs.status()
+建立用户名和密码认证 (因是集群，必须在Primary上来新建(子群节点上也会有该用户))
+	use wise_base_sensor
+	db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_sensor"}]})
+	db.auth("wise","123456");
+	use wise_base_data
+	db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_data"}]})
+	db.auth("wise","123456");
+
+应用连接配置(只需要配置上主从即可)
+	mongodb://user:password@master_host,slave_host/wise_base_sensor
+	mongodb://wise:123456@192.168.61.21,192.168.61.22/wise_base_sensor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
