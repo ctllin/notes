@@ -11,3 +11,19 @@ mongodb ½¨Á¢ ÓÃ»§ÃûºÍÃÜÂëÈÏÖ¤ ¼¯Èº(ÒòÊÇ¼¯Èº£¬±ØĞëÔÚPrimaryÉÏÀ´ĞÂ½¨(×ÓÈº½ÚµãÉÏÒ²»
 use wise_base_sensor
 db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_sensor"}]})
 db.auth("wise","123456");
+
+ ./bin/mongo 10.0.3.7:27017
+ cfg={_id:"hstr",members:[{_id:0,host:"10.0.3.7:27017",priority:2},{_id:1,host:"10.0.3.8:27017",priority:1},{_id:2,host:"10.0.3.9:27017",arbiterOnly:true}]};
+ rs.initiate(cfg)
+rs.status()
+use wise_base_sensor
+db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_sensor"}]})
+db.auth("wise","123456");
+use wise_base_data
+db.createUser({user:"wise",pwd:"123456",roles: [{role:"readWrite",db:"wise_base_data"}]})
+db.auth("wise","123456");
+
+
+
+./bin/mongo 10.0.3.7:27018
+cfg={_id:"hstr",members:[{_id:0,host:"10.0.3.7:27018",priority:2},{_id:1,host:"10.0.3.8:27018",priority:1},{_id:2,host:"10.0.3.9:27018",arbiterOnly:true}]};
