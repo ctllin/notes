@@ -1,3 +1,5 @@
+
+
 搜索路径以 classes/config.properties 结束且包含mysql的文件，并显示包含mysql的行
 grep "mysql" -rl *|grep "classes/config.properties" |xargs grep -n --color=auto 'mysql'  
 
@@ -20,6 +22,7 @@ whoami whoami命令的执行效果和id -un的效果完全一样，例如：
 查看结果： sysctl -a|grep vm.max_map_count
  显示： vm.max_map_count = 262144
 
+yum install -y unzip zip(否则编辑后无法提交)
 linux 查看war内容 例如test.war
 vim test.war 
 使用/搜索，如：/config.properties
